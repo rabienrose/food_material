@@ -11,7 +11,7 @@ class default_opt:
         self.result_addr = result_addr
         self.stop_accu = stop_accu
         print('choose default_opt')
-    def run(self, loss, test_acc, labels, inputs):
+    def run(self, loss, test_acc):
         train_step = tf.train.AdamOptimizer(1e-4).minimize(loss)
         init_op = tf.global_variables_initializer()
         saver = tf.train.Saver()
@@ -26,11 +26,9 @@ class default_opt:
                 after_time = time.perf_counter()
                 step_time = after_time - before_time
                 if i % self.debug_step_len == 0:
-                    test_acc_val, labels_val, inputs_val=sess.run([test_acc,labels, inputs])
+                    test_acc_val=sess.run(test_acc)
                     train_loss_val = sess.run(loss)
                     print("[step: %f][train loss: %f][test accu: %f][step time: %f]" % (i, train_loss_val, test_acc_val, step_time))
-                    print(labels_val)
-                    print(inputs_val)
                     if(test_acc_val>self.stop_accu):
                         saver.save(sess, self.result_addr)
             coord.request_stop()

@@ -3,10 +3,7 @@ import os
 from PIL import Image
 
 class ImageReader(object):
-  """Helper class that provides TensorFlow image coding utilities."""
-
   def __init__(self):
-    # Initializes function that decodes RGB JPEG data.
     self._decode_jpeg_data = tf.placeholder(dtype=tf.string)
     self._decode_jpeg = tf.image.decode_jpeg(self._decode_jpeg_data, channels=3)
 
@@ -23,7 +20,7 @@ class ImageReader(object):
 
 img_root="D:/material_sort_try/"
 img_addrs=["califlower", "non_califlower"]
-class_names_to_ids={"califlower":1, "non_califlower":-1}
+class_names_to_ids={"califlower":1, "non_califlower":0}
 image_reader = ImageReader()
 sess=tf.Session()
 with tf.python_io.TFRecordWriter('chamo.tfrecord') as tfrecord_writer:
@@ -43,4 +40,3 @@ with tf.python_io.TFRecordWriter('chamo.tfrecord') as tfrecord_writer:
                         'img_height':tf.train.Feature(int64_list=tf.train.Int64List(value=[size[1]]))
                     }))
                 tfrecord_writer.write(example.SerializeToString())
-

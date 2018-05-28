@@ -1,9 +1,7 @@
 import tensorflow as tf
-slim = tf.contrib.slim
 class default_opt:
-    name=None
     def __init__(self):
-        self.name ='default'
+        print('choose default_opt')
     def run(self, loss):
         train_step = tf.train.AdamOptimizer(1e-4).minimize(loss)
         init_op = tf.global_variables_initializer()

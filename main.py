@@ -3,10 +3,11 @@ import config.chamo
 import data_preprocessing.default_preprocess
 import net.vgg16
 import loss.default_loss
+import loss.entropy_loss
 import optimizer.default_opt
 
 config_name=sys.argv[1]
-print(config_name)
+print('choose config: '+config_name)
 config_obj=None
 if config_name=='chamo':
     config_obj=config.chamo.get_config()
@@ -25,6 +26,8 @@ loss_name=config_obj.loss_type
 loss_obj=None
 if loss_name=='default':
     loss_obj=loss.default_loss.default_loss()
+elif loss_name=='entropy_loss':
+    loss_obj =loss.entropy_loss.entropy_loss()
 
 opt_name=config_obj.opt_type
 opt_obj=None

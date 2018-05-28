@@ -119,6 +119,7 @@ def preprocess_for_train(image,
 class default_preprocess:
     tfrecord_addr=None
     def __init__(self,tfrecord_addr):
+        print('choose default_preprocess')
         self.tfrecord_addr =tfrecord_addr
     def def_preposess(self):
         filename_queue = tf.train.string_input_producer([self.tfrecord_addr])

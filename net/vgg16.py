@@ -9,6 +9,7 @@ class vgg16:
     fc_conv_padding = None
     global_pool = None
     def __init__(self):
+        print('choose vgg16')
         self.num_classes = 1
         self.is_training = True
         self.dropout_keep_prob = 0.5
@@ -44,6 +45,5 @@ class vgg16:
                     net = slim.dropout(net, self.dropout_keep_prob, is_training=self.is_training,scope='dropout7')
                     net = slim.conv2d(net, self.num_classes, [1, 1],activation_fn=None,normalizer_fn=None,scope='fc8')
                     end_points[sc.name + '/fc8'] = net
-                net = tf.tanh(inputs)
                 net = tf.squeeze(net)
                 return net

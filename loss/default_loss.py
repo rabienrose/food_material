@@ -1,8 +1,8 @@
 import tensorflow as tf
-slim = tf.contrib.slim
 class default_loss:
     def __init__(self):
-        name='test_loss'
+        print('choose default_loss')
     def def_loss(self,inputs, labels):
+        inputs = tf.tanh(inputs)
         loss = tf.reduce_sum(tf.square(labels - inputs))
         return loss

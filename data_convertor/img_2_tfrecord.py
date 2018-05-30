@@ -2,9 +2,9 @@ import tensorflow as tf
 import os
 from PIL import Image
 
-img_root="D:/material_try_all/"
+img_root="E:/material_try_all/"
 sess=tf.Session()
-with tf.python_io.TFRecordWriter('chamo.tfrecord') as tfrecord_writer:
+with tf.python_io.TFRecordWriter('chamo_test.tfrecord') as tfrecord_writer:
     img_list = os.listdir(img_root)
     for file_name in img_list:
         if file_name.find('.jpg'):
@@ -24,3 +24,4 @@ with tf.python_io.TFRecordWriter('chamo.tfrecord') as tfrecord_writer:
                     'img_height':tf.train.Feature(int64_list=tf.train.Int64List(value=[size[1]]))
                 }))
             tfrecord_writer.write(example.SerializeToString())
+

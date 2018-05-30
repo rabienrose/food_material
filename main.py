@@ -4,6 +4,7 @@ import config.chamo_full_run
 import data_preprocessing.default_preprocess
 import data_preprocessing.test_preprocess
 import net.vgg16
+import net.mobilenet_v2
 import loss.default_loss
 import loss.entropy_loss
 import accuracy.default_accuracy
@@ -35,6 +36,10 @@ test_net_obj=None
 if net_name=='vgg16':
     net_obj=net.vgg16.vgg16(True, 'vgg16', config_obj.class_num)
     test_net_obj=net.vgg16.vgg16(False, 'vgg16', config_obj.class_num)
+elif net_name=='mobilenet_v2':
+    net_obj = net.mobilenet_v2.mobilenet_v2(True, 'mobilenet_v2', config_obj.class_num)
+    test_net_obj = net.mobilenet_v2.mobilenet_v2(True, 'mobilenet_v2', config_obj.class_num)
+
 
 loss_name=config_obj.loss_type
 loss_obj=None
@@ -61,7 +66,7 @@ images, labels = preprocess_obj.def_preposess()
 images_test, labels_test = test_preprocess_obj.def_preposess()
 net = net_obj.def_net(images)
 net_test = test_net_obj.def_net(images_test)
-loss=loss_obj.def_loss(net, labels)
+loss = loss_obj.def_loss(net, labels)
 test_accu =accu_obj.def_accuracy(net_test, labels_test)
 opt_obj.run(loss, test_accu)
 

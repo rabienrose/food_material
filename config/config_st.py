@@ -23,7 +23,7 @@ class config_st:
         self.batchsize=10
         self.class_num=5
         self.preprocess_type = 'default'
-        self.net_type = 'vgg16'
+        self.net_type = 'mobilenet_v2'
         self.loss_type = 'default'
         self.accuracy_type='default'
         self.opt_type='default'

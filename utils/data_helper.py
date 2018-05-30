@@ -113,13 +113,13 @@ def _mean_image_subtraction(image, means):
         channels[i] -= means[i]
     return tf.concat(axis=2, values=channels)
 
-def get_raw_img(tfrecord_addr):
+def get_raw_img(tfrecord_addr, class_num):
     filename_queue = tf.train.string_input_producer([tfrecord_addr])
     reader = tf.TFRecordReader()
     _, serialized_example = reader.read(filename_queue)
     features = tf.parse_single_example(serialized_example,
                                        features={
-                                           'label': tf.FixedLenFeature([], tf.int64),
+                                           'label': tf.FixedLenFeature([class_num], tf.int64),
                                            'img_raw': tf.FixedLenFeature([], tf.string),
                                            'img_width': tf.FixedLenFeature([], tf.int64),
                                            'img_height': tf.FixedLenFeature([], tf.int64),
@@ -143,6 +143,18 @@ def check_imgs(images, labels):
             print(label_batch_v[k])
             plt.imshow(processed_img)
             plt.show()
+        coord.request_stop()
+        coord.join(threads)
+
+def check_vars(tensor_list):
+    with tf.Session() as sess:
+        coord = tf.train.Coordinator()
+        threads = tf.train.start_queue_runners(coord=coord)
+        init_op = tf.global_variables_initializer()
+        sess.run(init_op)
+        re = sess.run(tensor_list)
+        for k in re:
+            print(k)
         coord.request_stop()
         coord.join(threads)
 

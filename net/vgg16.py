@@ -8,9 +8,9 @@ class vgg16:
     scope = None
     fc_conv_padding = None
     global_pool = None
-    def __init__(self, is_training, scope):
+    def __init__(self, is_training, scope, num_classes):
         print('choose vgg16')
-        self.num_classes = 1
+        self.num_classes = num_classes
         self.is_training = is_training
         self.dropout_keep_prob = 0.5
         self.spatial_squeeze = True
@@ -19,7 +19,7 @@ class vgg16:
         self.global_pool = False
 
     def def_net(self,inputs):
-        with tf.variable_scope(self.scope, 'vgg_16', [inputs], reuse=True) as sc:
+        with tf.variable_scope(self.scope, 'vgg_16', [inputs], reuse=tf.AUTO_REUSE) as sc:
             end_points_collection = sc.original_name_scope + '_end_points'
             with slim.arg_scope([slim.conv2d, slim.fully_connected, slim.max_pool2d],
                                 outputs_collections=end_points_collection):

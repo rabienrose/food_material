@@ -20,12 +20,14 @@ def preprocess_for_train(image,
 class default_preprocess:
     tfrecord_addr=None
     batchsize=None
-    def __init__(self,tfrecord_addr, batchsize):
+    class_num=None
+    def __init__(self,tfrecord_addr, batchsize, class_num):
         print('choose default_preprocess')
         self.batchsize=batchsize
         self.tfrecord_addr =tfrecord_addr
+        self.class_num=class_num
     def def_preposess(self):
-        image, label = utils.data_helper.get_raw_img(self.tfrecord_addr)
+        image, label = utils.data_helper.get_raw_img(self.tfrecord_addr, self.class_num)
         train_image_size = _RESIZE_SIDE_MIN
         image = preprocess_for_train(image, train_image_size, train_image_size)
         images, labels = tf.train.shuffle_batch([image, label], batch_size=self.batchsize, num_threads=1,capacity=5 * self.batchsize, min_after_dequeue=5)

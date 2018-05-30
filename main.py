@@ -22,15 +22,19 @@ preprocess_name=config_obj.preprocess_type
 preprocess_obj=None
 test_preprocess_obj=None
 if preprocess_name=='default':
-    preprocess_obj=data_preprocessing.default_preprocess.default_preprocess(config_obj.tfrecord_test_addr, config_obj.batchsize)
+    preprocess_obj=data_preprocessing.default_preprocess.default_preprocess(
+        config_obj.tfrecord_test_addr,
+        config_obj.batchsize,
+        config_obj.class_num
+    )
 
-test_preprocess_obj=data_preprocessing.test_preprocess.test_preprocess(config_obj.tfrecord_test_addr)
+test_preprocess_obj=data_preprocessing.test_preprocess.test_preprocess(config_obj.tfrecord_test_addr, config_obj.class_num)
 net_name=config_obj.net_type
 net_obj=None
 test_net_obj=None
 if net_name=='vgg16':
-    net_obj=net.vgg16.vgg16(True, 'vgg16')
-    test_net_obj=net.vgg16.vgg16(False, 'vgg16')
+    net_obj=net.vgg16.vgg16(True, 'vgg16', config_obj.class_num)
+    test_net_obj=net.vgg16.vgg16(False, 'vgg16', config_obj.class_num)
 
 loss_name=config_obj.loss_type
 loss_obj=None

@@ -11,6 +11,7 @@ class config_st:
     result_addr=None
     stop_accu=None
     batchsize=None
+    class_num=None
     def __init__(self):
         super(config_st, self).__init__()
         self.tfrecord_addr = './output/chamo.tfrecord'
@@ -20,6 +21,7 @@ class config_st:
         self.result_addr = './output/'
         self.stop_accu=0.7
         self.batchsize=10
+        self.class_num=5
         self.preprocess_type = 'default'
         self.net_type = 'vgg16'
         self.loss_type = 'default'

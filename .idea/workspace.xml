@@ -14,112 +14,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="config_st.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/food_material/config/config_st.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="test_config.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/food_material/config/test_config.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="57">
-              <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="default_accuracy.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/food_material/accuracy/default_accuracy.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="38">
-              <caret line="2" lean-forward="true" selection-start-line="1" selection-start-column="24" selection-end-line="2" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="img_2_tfrecord.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/food_material/data_convertor/img_2_tfrecord.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="12" column="35" lean-forward="true" selection-start-line="12" selection-start-column="35" selection-end-line="12" selection-end-column="35" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/food_material/main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="582">
-              <caret line="59" column="5" lean-forward="true" selection-start-line="59" selection-start-column="5" selection-end-line="59" selection-end-column="5" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="picDevider.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/food_material/data_scraping/picDevider.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="295" lean-forward="true" selection-start-line="295" selection-end-line="295" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="vgg16.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/food_material/net/vgg16.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="22" column="74" lean-forward="true" selection-start-line="22" selection-start-column="74" selection-end-line="22" selection-end-column="74" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="data_helper.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/food_material/utils/data_helper.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="356">
-              <caret line="146" column="27" lean-forward="true" selection-start-line="146" selection-start-column="27" selection-end-line="146" selection-end-column="27" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="default_preprocess.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/food_material/data_preprocessing/default_preprocess.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="627">
-              <caret line="33" column="29" lean-forward="true" selection-start-line="33" selection-start-column="29" selection-end-line="33" selection-end-column="29" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test_preprocess.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/food_material/data_preprocessing/test_preprocess.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="494">
-              <caret line="26" column="18" lean-forward="true" selection-start-line="26" selection-start-column="18" selection-end-line="26" selection-end-column="18" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -161,59 +56,6 @@
             <path>
               <item name="food_material" type="b2602c69:ProjectViewProjectNode" />
               <item name="food_material" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="food_material" type="b2602c69:ProjectViewProjectNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="food_material" type="b2602c69:ProjectViewProjectNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="accuracy" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="food_material" type="b2602c69:ProjectViewProjectNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="code_snipet" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="food_material" type="b2602c69:ProjectViewProjectNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="config" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="food_material" type="b2602c69:ProjectViewProjectNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="data_convertor" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="food_material" type="b2602c69:ProjectViewProjectNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="data_preprocessing" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="food_material" type="b2602c69:ProjectViewProjectNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="data_scraping" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="food_material" type="b2602c69:ProjectViewProjectNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="net" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="food_material" type="b2602c69:ProjectViewProjectNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="food_material" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -335,7 +177,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16174921" />
       <window_info anchor="bottom" id="TODO" order="6" visible="true" weight="0.3293348" />

@@ -18,8 +18,8 @@ class config_st:
         self.tfrecord_test_addr = './output/chamo_test.tfrecord'
         self.max_step = 100000
         self.debug_step_len = 50
-        self.result_addr = './output/'
-        self.stop_accu=0.7
+        self.result_addr = './output/chamo.ckpt'
+        self.stop_accu=0.01
         self.batchsize=10
         self.class_num=5
         self.preprocess_type = 'default'

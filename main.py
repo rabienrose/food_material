@@ -24,7 +24,7 @@ preprocess_obj=None
 test_preprocess_obj=None
 if preprocess_name=='default':
     preprocess_obj=data_preprocessing.default_preprocess.default_preprocess(
-        config_obj.tfrecord_test_addr,
+        config_obj.tfrecord_addr,
         config_obj.batchsize,
         config_obj.class_num
     )

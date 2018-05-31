@@ -29,7 +29,8 @@ class default_opt:
                     test_acc_val=sess.run(test_acc)
                     train_loss_val = sess.run(loss)
                     print("[step: %f][train loss: %f][test accu: %f][step time: %f]" % (i, train_loss_val, test_acc_val, step_time))
-                    if(test_acc_val>self.stop_accu):
+                    if(train_loss_val<self.stop_accu):
                         saver.save(sess, self.result_addr)
+
             coord.request_stop()
             coord.join(threads)

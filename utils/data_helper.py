@@ -1,6 +1,6 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
-
+import utils.global_var
 def _crop(image, offset_height, offset_width, crop_height, crop_width):
     original_shape = tf.shape(image)
     rank_assertion = tf.Assert(tf.equal(tf.rank(image), 3),['Rank of image must be equal to 3.'])
@@ -102,7 +102,8 @@ def _aspect_preserving_resize(image, smallest_side):
     resized_image.set_shape([None, None, 3])
     return resized_image
 
-def _mean_image_subtraction(image, means):
+def _mean_image_subtraction(image):
+    means = utils.global_var.means
     if image.get_shape().ndims != 3:
         raise ValueError('Input must be of size [height, width, C>0]')
     num_channels = image.get_shape().as_list()[-1]

@@ -19,7 +19,7 @@ class default_opt:
             sess.run(init_op)
             coord = tf.train.Coordinator()
             threads = tf.train.start_queue_runners(coord=coord)
-            #writer = tf.summary.FileWriter("logs/", sess.graph)
+            writer = tf.summary.FileWriter("logs/", sess.graph)
             for i in range(self.max_step):
                 before_time = time.perf_counter()
                 sess.run(train_step)

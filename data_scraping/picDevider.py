@@ -6,17 +6,18 @@ from pyexcel_xls import save_data
 import shutil
 import filecmp
 
-excel_path = 'D:\\v1.0.0_0507.xlsx'
+excel_path = 'E:\\data\\v1.0.0_0507.xlsx'
 
-pic_src_path = 'E:\\1000_data\\train_no_expand'
+pic_src_path = 'D:\\1000_data\\train_no_expand'
 
-pic_des_path = 'E:\\material_data\\temp'
+pic_des_path = 'D:\\fine_filtered\\test\\'
 
-pic_merge_path_train = 'E:\\material_data\\only200_train'
+pic_merge_path_train = 'D:\\only200_train'
 
-pic_merge_path_test = 'E:\\material_data\\only200_test'
+pic_merge_path_test = 'D:\\only200_test'
 
-materials = [u'冬瓜', u'木耳', u'黄瓜', u'虾仁', u'花菜']
+materials = [u'青椒', u'炒肉', u'鸡蛋', u'木耳']
+#materials = ['木耳肉片']
 
 SUF_LABEL = 'labelmat'
 
@@ -239,11 +240,13 @@ def merge_name(file_path, name, num, length):
     if not file_path_basename.endswith(SUF_LABEL):
         des_name = name + '_' + str(pow(10, length-num-1)).zfill(length) + '_' + str(PIC_NUM) + '_' + SUF_LABEL + '.jpg'
         try:
-            os.rename(file_path, os.path.join(os.path.dirname(file_path), des_name))
+            ret_name = os.path.join(os.path.dirname(file_path), des_name)
+            os.rename(file_path, ret_name)
         except:
-            return
+            return None
 
         PIC_NUM += 1
+        return ret_name
     else:
         num_start = file_path_basename.find('_')
         num_end = file_path_basename.find('_', num_start + 1)
@@ -254,11 +257,13 @@ def merge_name(file_path, name, num, length):
             past_num_i += pow(10, length - num - 1)
             print('past_num_i changed', past_num_i, file_path)
         else:
-            return
+            return file_path
         des_name = file_path_basename[0:num_start + 1] \
                    + str(past_num_i).zfill(length) \
                    + file_path_basename[num_end:len(file_path_basename)] + '.jpg'
-        os.rename(file_path, os.path.join(os.path.dirname(file_path), des_name))
+        ret_name = os.path.join(os.path.dirname(file_path), des_name)
+        os.rename(file_path, ret_name)
+        return ret_name
 
 
 def tag_path(pic_path, mat_array):
@@ -273,7 +278,7 @@ def tag_path(pic_path, mat_array):
             file_path = os.path.join(root, file)
             for mat in mat_array:
                 if mat in file:
-                    merge_name(file_path, 'test', mat_array.index(mat), len(mat_array))
+                    file_path = merge_name(file_path, 'test', mat_array.index(mat), len(mat_array))
 
 
 # 判断该文件夹下是否包含与file相同的文件
@@ -290,9 +295,11 @@ def is_file_exist(file, des_path):
 def is_same_file(file_l, file_r):
     return filecmp.cmp(file_l, file_r)
 
-
 if __name__ == '__main__':
-    merge_num_test(pic_des_path, pic_merge_path_test, pic_merge_path_train, materials, 20)
+    #mat_dict=get_mat_num(materials, excel_path)
+    #create_and_copy(mat_dict, pic_src_path, pic_des_path)
+    merge_num(pic_des_path, pic_merge_path_test, materials, 4000)
+    #merge_num_test(pic_des_path, pic_merge_path_test, pic_merge_path_train, materials, 5)
     tag_path(pic_merge_path_test, materials)
 
 

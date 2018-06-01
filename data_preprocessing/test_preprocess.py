@@ -26,6 +26,6 @@ class test_preprocess:
         image, label = utils.data_helper.get_raw_img(self.tfrecord_addr, self.class_num)
         train_image_size = _RESIZE_SIDE_MIN
         image = preprocess_for_train(image, train_image_size, train_image_size)
-        c=50
+        c=30
         images, labels = tf.train.batch([image, label], batch_size=c, num_threads=1,capacity=c*5)
         return images, labels

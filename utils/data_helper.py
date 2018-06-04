@@ -135,7 +135,9 @@ def get_raw_img(tfrecord_addr, class_num):
                                        })
     height = tf.cast(features['img_height'], tf.int32)
     width = tf.cast(features['img_width'], tf.int32)
-    image = tf.decode_raw(features['img_raw'], tf.uint8)
+    img_data_jpg = tf.image.decode_jpeg(features['img_raw'])
+    img_data_jpg = tf.image.convert_image_dtype(img_data_jpg, dtype=tf.uint8)
+    image = img_data_jpg
     channel = 3
     image = tf.reshape(image, [height, width, channel])
     label = tf.cast(features['label'], tf.float32)

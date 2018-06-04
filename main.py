@@ -63,6 +63,7 @@ if opt_name=='default':
         config_obj.stop_accu
     )
 images, labels = preprocess_obj.def_preposess()
+#utils.data_helper.check_imgs(images, labels)
 images_test, labels_test = test_preprocess_obj.def_preposess()
 net = net_obj.def_net(images)
 net_test = test_net_obj.def_net(images_test)

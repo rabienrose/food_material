@@ -27,9 +27,9 @@ for file_name in img_list:
             tfrecord_writer=tf.python_io.TFRecordWriter('../tfrecord/chamo_%05d.tfrecord' % rfrecod_file_count)
             rfrecod_file_count=rfrecod_file_count+1
         img_count = img_count + 1
+        image_data = tf.gfile.FastGFile(img_root + '/' + file_name, 'rb').read()
         img = Image.open(img_root + '/' + file_name, 'r')
         size = img.size
-        img_raw = img.tobytes()
         splited=file_name.split('_')
         code=splited[1]
         code = Denary2Binary(int(code))
@@ -41,7 +41,7 @@ for file_name in img_list:
         example = tf.train.Example(features=tf.train.Features(
             feature={
                 'label': tf.train.Feature(int64_list=tf.train.Int64List(value=bit_array)),
-                'img_raw': tf.train.Feature(bytes_list=tf.train.BytesList(value=[img_raw])),
+                'img_raw': tf.train.Feature(bytes_list=tf.train.BytesList(value=[image_data])),
                 'img_width':tf.train.Feature(int64_list=tf.train.Int64List(value=[size[0]])),
                 'img_height':tf.train.Feature(int64_list=tf.train.Int64List(value=[size[1]]))
             }))

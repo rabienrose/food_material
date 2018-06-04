@@ -5,19 +5,20 @@ from pyexcel_xls import get_data
 from pyexcel_xls import save_data
 import shutil
 import filecmp
+from data_scraping.materil_name import *
 
 excel_path = 'E:\\data\\v1.0.0_0507.xlsx'
 
-pic_src_path = 'D:\\1000_data\\train_no_expand'
+pic_src_path = 'E:\\1000_data\\train_no_expand'
 
-pic_des_path = 'D:\\fine_filtered\\test\\'
+pic_des_path = 'E:\\fine_filtered\\test\\'
 
-pic_merge_path_train = 'D:\\only200_train'
+pic_merge_path_train = 'E:\\only200_train_teete'
 
-pic_merge_path_test = 'D:\\only200_test'
+pic_merge_path_test = 'E:\\only200_test'
 
-materials = [u'青椒', u'炒肉', u'鸡蛋', u'木耳']
-#materials = ['木耳肉片']
+
+# materials = [[u'青椒'], [u'番茄', u'西红柿'], [u'鸡蛋'], [u'木耳']]
 
 SUF_LABEL = 'labelmat'
 
@@ -36,10 +37,11 @@ def get_mat_num(materials, excel_path):
     for sheet_n in xls_data.keys():
         for row in xls_data[sheet_n]:
             for material in materials:
-                if material in row[1]:
-                    if not material in ret.keys():
-                        ret[material] = []
-                    ret[material].append([row[0], row[1].strip()])
+                for sub_mat in material:
+                    if sub_mat in row[1]:
+                        if not material[0] in ret.keys():
+                            ret[material[0]] = []
+                        ret[material[0]].append([row[0], row[1].strip()])
         break
     return ret
 
@@ -77,9 +79,10 @@ def create_and_copy(mat_dict, src_path, des_path):
                 continue
 
 
-def merge(src_path, des_path, mat_array):
+# TODO implement this func
+def merge_all(src_path, des_path, mat_array):
     '''
-    把通过食材分类的菜品进行标记并整合到同一个文件夹
+    把通过食材分类的菜品进行标记并整合到目标文件夹
     :param src_path:
     :param des_path:
     :param mat_array: 食材的列表
@@ -90,9 +93,15 @@ def merge(src_path, des_path, mat_array):
     if not os.path.exists(des_path):
         os.makedirs(des_path)
     mat_list = os.listdir(src_path)
+
+    array_len = len(mat_array)
+
     for mat_path in mat_list:
         # 得到食材的名称
         mat_name = mat_path
+
+        mat_num = get_matarray_num(mat_array, mat_name)
+
         # 转换为完整路径
         mat_path = os.path.join(src_path, mat_path)
         num_list = os.listdir(mat_path)
@@ -102,16 +111,17 @@ def merge(src_path, des_path, mat_array):
             # 得到具体的食材的菜品的文件夹路径
             veg_path = os.path.join(mat_path, veg_path)
             print('处理路径：', veg_path)
+            # for root, dirs, files in os.walk(veg_path):
+            #     for file in files:
+            #         file = os.path.join(root, file)
+            #         shutil.copy(file, des_path)
             for root, dirs, files in os.walk(veg_path):
                 for file in files:
                     src_file_path = os.path.join(root, file)
                     des_file_path = os.path.join(des_path, file)
-                    file_existed, pic_des_path = is_file_exist(src_file_path, des_path)
-                    if not file_existed:
-                        shutil.copyfile(src_file_path, des_file_path)
-                    else:
-                        des_file_path = pic_des_path
-                    merge_name(des_file_path, veg_name, mat_array.index(mat_name), len(mat_array))
+                    shutil.copyfile(src_file_path, des_file_path)
+                    if merge_name(des_file_path, veg_name, mat_num, array_len) is None:
+                        print('标记失败', des_file_path)
 
 
 def merge_num(src_path, des_path, mat_array, pic_num):
@@ -146,7 +156,6 @@ def merge_num(src_path, des_path, mat_array, pic_num):
             veg_name = veg_path
             # 得到具体的食材的菜品的文件夹路径
             veg_path = os.path.join(mat_path, veg_path)
-            print('处理路径：', veg_path)
             # 每个文件夹当前的图片获取数
             num_cur = 0
             for root, dirs, files in os.walk(veg_path):
@@ -156,7 +165,7 @@ def merge_num(src_path, des_path, mat_array, pic_num):
                     file_existed, pic_des_path = is_file_exist(src_file_path, des_path)
                     if not file_existed:
                         shutil.copyfile(src_file_path, des_file_path)
-                        merge_name(des_file_path, veg_name, mat_array.index(mat_name), len(mat_array))
+                        merge_name(des_file_path, veg_name, get_matarray_num(mat_array, mat_name), len(mat_array))
                     else:
                         continue
                     num_cur += 1
@@ -212,7 +221,7 @@ def merge_num_test(src_path, des_path, train_path, mat_array, pic_num):
                     if file_existed or train_existed:
                         continue
                     shutil.copyfile(src_file_path, des_file_path)
-                    merge_name(des_file_path, veg_name, mat_array.index(mat_name), len(mat_array))
+                    merge_name(des_file_path, veg_name, get_matarray_num(mat_array, mat_name), len(mat_array))
                     num_cur += 1
                     num_left -= 1
                     # 如果本文件夹取的数量大于了本文件夹的设定数量或者本文件夹的最大图片数，则退出本文件夹
@@ -238,7 +247,7 @@ def merge_name(file_path, name, num, length):
     file_path_name = os.path.basename(file_path)
     file_path_basename = os.path.splitext(file_path_name)[0]
     if not file_path_basename.endswith(SUF_LABEL):
-        des_name = name + '_' + str(pow(10, length-num-1)).zfill(length) + '_' + str(PIC_NUM) + '_' + SUF_LABEL + '.jpg'
+        des_name = name + '_' + str(pow(2, length - num - 1)) + '_' + str(PIC_NUM) + '_' + SUF_LABEL + '.jpg'
         try:
             ret_name = os.path.join(os.path.dirname(file_path), des_name)
             os.rename(file_path, ret_name)
@@ -252,14 +261,13 @@ def merge_name(file_path, name, num, length):
         num_end = file_path_basename.find('_', num_start + 1)
         past_num = file_path_basename[num_start + 1:num_end]
         past_num_i = int(past_num)
-        temp = pow(10, length - num)
-        if int(past_num_i / pow(10, length - num - 1)) % 2 == 0:
-            past_num_i += pow(10, length - num - 1)
+        if int(past_num_i & pow(2, length - num - 1)) == 0:
+            past_num_i = past_num_i | pow(2, length - num - 1)
             print('past_num_i changed', past_num_i, file_path)
         else:
             return file_path
         des_name = file_path_basename[0:num_start + 1] \
-                   + str(past_num_i).zfill(length) \
+                   + str(past_num_i) \
                    + file_path_basename[num_end:len(file_path_basename)] + '.jpg'
         ret_name = os.path.join(os.path.dirname(file_path), des_name)
         os.rename(file_path, ret_name)
@@ -277,8 +285,9 @@ def tag_path(pic_path, mat_array):
         for file in files:
             file_path = os.path.join(root, file)
             for mat in mat_array:
-                if mat in file:
-                    file_path = merge_name(file_path, 'test', mat_array.index(mat), len(mat_array))
+                for sub_mat in mat:
+                    if sub_mat in file:
+                        file_path = merge_name(file_path, 'test', get_matarray_num(mat_array, sub_mat), len(mat_array))
 
 
 # 判断该文件夹下是否包含与file相同的文件
@@ -291,16 +300,36 @@ def is_file_exist(file, des_path):
     return False, None
 
 
+def get_matarray_num(mat_array, mat_name):
+    '''
+    根据食材的名称获取食材的编号
+    :param mat_array: 食材数组
+    :param mat_name: 食材的名称
+    :return: 食材的编号
+    '''
+    for i in mat_array:
+        if mat_name in i:
+            return mat_array.index(i)
+    return None
+
+
+
 # 比较两个文件是否相同
 def is_same_file(file_l, file_r):
     return filecmp.cmp(file_l, file_r)
 
+
 if __name__ == '__main__':
-    #mat_dict=get_mat_num(materials, excel_path)
-    #create_and_copy(mat_dict, pic_src_path, pic_des_path)
-    merge_num(pic_des_path, pic_merge_path_test, materials, 4000)
-    #merge_num_test(pic_des_path, pic_merge_path_test, pic_merge_path_train, materials, 5)
-    tag_path(pic_merge_path_test, materials)
+    #
+    # mat_dict = get_mat_num(material_list, excel_path)
+    # # for i in mat_dict:
+    # #     print(i, ':', mat_dict[i])
+    # create_and_copy(mat_dict, pic_src_path, temp_test)
+    # # merge_num(pic_des_path, pic_merge_path_train, data_scraping.materil_name.material_list, 4000)
+    merge_all(pic_des_path, pic_merge_path_train, material_list)
+    # merge_num_test(pic_des_path, pic_merge_path_test, pic_merge_path_train, materials, 5)
+    tag_path(pic_merge_path_train, material_list)
+
 
 
 

@@ -1,6 +1,8 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import utils.global_var
+import os
+
 def _crop(image, offset_height, offset_width, crop_height, crop_width):
     original_shape = tf.shape(image)
     rank_assertion = tf.Assert(tf.equal(tf.rank(image), 3),['Rank of image must be equal to 3.'])
@@ -115,7 +117,13 @@ def _mean_image_subtraction(image):
     return tf.concat(axis=2, values=channels)
 
 def get_raw_img(tfrecord_addr, class_num):
-    filename_queue = tf.train.string_input_producer([tfrecord_addr])
+    file_list = os.listdir(tfrecord_addr)
+    tfrecord_list=[]
+    for file_name in file_list:
+        if file_name.find('.tfrecord'):
+            tfrecord_list.append(tfrecord_addr+file_name)
+    print(tfrecord_list)
+    filename_queue = tf.train.string_input_producer(tfrecord_list)
     reader = tf.TFRecordReader()
     _, serialized_example = reader.read(filename_queue)
     features = tf.parse_single_example(serialized_example,
@@ -134,15 +142,17 @@ def get_raw_img(tfrecord_addr, class_num):
     return image, label
 
 def check_imgs(images, labels):
+    img_mean = utils.global_var.means
     with tf.Session() as sess:
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord)
         image_batch_v, label_batch_v = sess.run([images, labels])
         for k in range(len(image_batch_v)):
             processed_img = image_batch_v[k]
-            processed_img = processed_img / 255
             print(label_batch_v[k])
-            plt.imshow(processed_img)
+            show_img = processed_img + img_mean
+            show_img = abs(show_img) / 256.0
+            plt.imshow(show_img)
             plt.show()
         coord.request_stop()
         coord.join(threads)

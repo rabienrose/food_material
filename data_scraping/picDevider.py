@@ -7,13 +7,13 @@ import shutil
 import filecmp
 from data_scraping.materil_name import *
 
-excel_path = 'E:\\data\\v1.0.0_0507.xlsx'
+excel_path = '/home/leo/Documents/chamo/food_material/V1.1.0.0525_1156.xlsx'
 
-pic_src_path = 'E:\\1000_data\\train_no_expand'
+pic_src_path = '/home/leo/Downloads/1000_work_set/5_29/all/1156_dish'
 
-pic_des_path = 'E:\\fine_filtered\\test\\'
+pic_des_path = '/home/leo/Downloads/chamo/train'
 
-pic_merge_path_train = 'E:\\only200_train_teete'
+pic_merge_path_train = '/home/leo/Downloads/chamo/train_merge'
 
 pic_merge_path_test = 'E:\\only200_test'
 
@@ -59,12 +59,12 @@ def create_and_copy(mat_dict, src_path, des_path):
     if not os.path.exists(des_path):
         os.makedirs(des_path)
     for material in mat_dict:
-        m_path = des_path + '\\' + material
+        m_path = des_path + '/' + material
         if not os.path.exists(m_path):
             os.mkdir(m_path)
         for num, name in mat_dict[material]:
-            num_src = src_path + '\\'  + num
-            num_des = des_path + '\\' + material + '\\' + name
+            num_src = src_path + '/'  + num
+            num_des = des_path + '/' + material + '/' + name
             print('past: ', num_src)
             print('to: ', num_des)
             if not os.path.exists(num_src):
@@ -321,10 +321,10 @@ def is_same_file(file_l, file_r):
 
 if __name__ == '__main__':
     #
-    # mat_dict = get_mat_num(material_list, excel_path)
+    #mat_dict = get_mat_num(material_list, excel_path)
     # # for i in mat_dict:
     # #     print(i, ':', mat_dict[i])
-    # create_and_copy(mat_dict, pic_src_path, temp_test)
+    #create_and_copy(mat_dict, pic_src_path, pic_des_path)
     # # merge_num(pic_des_path, pic_merge_path_train, data_scraping.materil_name.material_list, 4000)
     merge_all(pic_des_path, pic_merge_path_train, material_list)
     # merge_num_test(pic_des_path, pic_merge_path_test, pic_merge_path_train, materials, 5)

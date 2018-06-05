@@ -122,7 +122,6 @@ def get_raw_img(tfrecord_addr, class_num):
     for file_name in file_list:
         if file_name.find('.tfrecord'):
             tfrecord_list.append(tfrecord_addr+file_name)
-    print(tfrecord_list)
     filename_queue = tf.train.string_input_producer(tfrecord_list)
     reader = tf.TFRecordReader()
     _, serialized_example = reader.read(filename_queue)

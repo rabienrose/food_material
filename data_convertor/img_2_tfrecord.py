@@ -16,9 +16,6 @@ def Denary2Binary(n):
 
 def convert_a_folder(folder_name,file_root,tfrecord_root,lable_bit):
     print('start convert %s' % folder_name)
-    print(file_root)
-    print(tfrecord_root)
-    print(lable_bit)
     tfrecord_writer = tf.python_io.TFRecordWriter(tfrecord_root + folder_name + '.tfrecord')
     img_list = os.listdir(file_root + folder_name)
     img_count = 0

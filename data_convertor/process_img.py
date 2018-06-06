@@ -33,5 +33,5 @@ def convertTFRecord():
     data_convertor.img_2_tfrecord.main(file_root, tfrecord_root, lable_bit, thread_count)
 
 #checkFormat()
-checkChannel()
+#checkChannel()
 convertTFRecord()

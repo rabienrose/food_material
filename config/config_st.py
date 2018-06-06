@@ -27,3 +27,4 @@ class config_st:
         self.loss_type = 'default'
         self.accuracy_type='default'
         self.opt_type='default'
+        self.loading_his=False

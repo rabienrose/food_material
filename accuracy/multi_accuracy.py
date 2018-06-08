@@ -21,12 +21,12 @@ class multi_accuracy:
         in_shape = inputs.get_shape().as_list()
         inputs = tf.cast(inputs > 0.5, tf.float32)
         acc_perfect = tf.reduce_mean(tf.cast(tf.reduce_sum(tf.abs(labels - inputs), axis=1) < 0.1, tf.float32))
-        accuracy = tf.reduce_mean(tf.reduce_sum(tf.cast(tf.equal(labels, inputs), tf.float32)))
+        accuracy = tf.reduce_mean(tf.cast(tf.equal(labels, inputs), tf.float32))
         precision = tf.divide(
             tf.reduce_sum(inputs) - tf.reduce_sum(tf.cast(inputs - labels >= 1, tf.float32)), tf.reduce_sum(inputs))
         recall = tf.divide(
             tf.reduce_sum(labels) - tf.reduce_sum(tf.cast(labels - inputs >= 1, tf.float32)), tf.reduce_sum(labels))
-        acc_list = tf.divide(tf.reduce_sum(tf.equal(inputs, labels), axis=0), in_shape[0])
+        acc_list = tf.divide(tf.reduce_sum(tf.cast(tf.equal(inputs, labels), tf.float32), axis=0), in_shape[0])
         pre_list = tf.divide(
             tf.reduce_sum(inputs, axis=0) - tf.reduce_sum(tf.cast(labels - inputs >= 1, tf.float32), axis=0),
             tf.reduce_sum(inputs, axis=0))

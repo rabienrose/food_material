@@ -60,7 +60,9 @@ if opt_name=='default':
         config_obj.max_step,
         config_obj.debug_step_len,
         config_obj.result_addr,
-        config_obj.stop_accu
+        config_obj.stop_accu,
+        config_obj.loading_his,
+        config_obj.ckpt_name
     )
 
 images, labels = preprocess_obj.def_preposess()
@@ -70,5 +72,5 @@ net = net_obj.def_net(images)
 net_test = test_net_obj.def_net(images_test)
 loss = loss_obj.def_loss(net, labels)
 test_accu =accu_obj.def_accuracy(net_test, labels_test)
-opt_obj.run(loss, test_accu, config_obj.loading_his)
+opt_obj.run(loss, test_accu)
 

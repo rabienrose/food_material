@@ -12,6 +12,7 @@ class config_st:
     stop_accu=None
     batchsize=None
     class_num=None
+    ckpt_name=''
     def __init__(self):
         super(config_st, self).__init__()
         self.tfrecord_addr = './output/chamo.tfrecord'
@@ -28,3 +29,4 @@ class config_st:
         self.accuracy_type='default'
         self.opt_type='default'
         self.loading_his=False
+        self.ckpt_name=''

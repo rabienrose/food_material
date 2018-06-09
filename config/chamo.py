@@ -3,11 +3,12 @@ def get_config():
     config=config_st()
     config.tfrecord_addr='/home/leo/Downloads/chamo/tfrecord/'
     config.tfrecord_test_addr = '/home/leo/Downloads/chamo/tfrecord/'
-    config.debug_step_len = 100
-    config.batchsize=32
+    config.debug_step_len = 500
+    config.batchsize=16
     config.loss_type='entropy_loss'
     config.net_type = 'mobilenet_v2'
     config.class_num = 102
     config.result_addr = './output/'
-    config.loading_his = False
+    config.ckpt_name='chamo_150000.000000_0.033395_0.550000'
+    config.loading_his = True
     return config

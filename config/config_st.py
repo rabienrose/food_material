@@ -13,6 +13,7 @@ class config_st:
     batchsize=None
     class_num=None
     ckpt_name=''
+    is_training=None
     def __init__(self):
         super(config_st, self).__init__()
         self.tfrecord_addr = './output/chamo.tfrecord'
@@ -30,3 +31,4 @@ class config_st:
         self.opt_type='default'
         self.loading_his=False
         self.ckpt_name=''
+        self.is_training=True

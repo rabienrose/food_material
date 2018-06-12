@@ -1,0 +1,13 @@
+
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+PROJECT(check_simi)
+IF(NOT CMAKE_BUILD_TYPE )
+   SET( CMAKE_BUILD_TYPE "Debug" )
+ENDIF()
+#message(STATUS ${DBow3_DIR})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -ggdb")
+find_package(OpenCV REQUIRED)
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src ${OpenCV_INCLUDE_DIRS} /usr/local/include/DBoW3)
+LINK_DIRECTORIES(/usr/local/lib)
+ADD_EXECUTABLE(check_simi main.cpp ransac.cpp)
+target_link_libraries(check_simi ${OpenCV_LIBS} DBoW3)

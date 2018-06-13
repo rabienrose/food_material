@@ -34,7 +34,7 @@ class multi_accuracy:
             tf.reduce_sum(labels, axis=0) - tf.reduce_sum(tf.cast(labels - inputs >= 1, tf.float32), axis=0),
             tf.reduce_sum(labels, axis=0))
 
-        return acc_perfect, accuracy, precision, recall, acc_list, pre_list, recall_list
+        return [acc_perfect, accuracy, precision, recall, acc_list, pre_list, recall_list]
 
 
 if __name__ == '__main__':

@@ -37,9 +37,9 @@ class default_opt:
                 if i % self.debug_step_len == 0:
                     test_acc_val=sess.run(test_acc)
                     train_loss_val = sess.run(loss)
-                    print("[step: %f][train loss: %f][test accu: %f][step time: %f]" % (i, train_loss_val, test_acc_val, step_time))
+                    print("[step: %f][train loss: %f][perf accu: %f][accu: %f][prec: %f][recall: %f][step time: %f]" % (i, train_loss_val, test_acc_val[0], test_acc_val[1], test_acc_val[2], test_acc_val[3], step_time))
                     if i % (self.debug_step_len*20) == 0:
-                        output_name=self.result_addr+'chamo_%f_%f_%f' % (i, train_loss_val, test_acc_val)
+                        output_name=self.result_addr+'chamo_%f_%f_%f' % (i, train_loss_val, test_acc_val[0])
                         os.system('mkdir '+output_name)
                         saver.save(sess, output_name+'/chamo.ckpt')
             coord.request_stop()

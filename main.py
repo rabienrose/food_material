@@ -8,6 +8,7 @@ import net.mobilenet_v2
 import loss.default_loss
 import loss.entropy_loss
 import accuracy.default_accuracy
+import accuracy.multi_accuracy
 import optimizer.default_opt
 import utils.data_helper
 
@@ -52,6 +53,8 @@ accu_name=config_obj.accuracy_type
 accu_obj=None
 if accu_name=='default':
     accu_obj=accuracy.default_accuracy.default_accuracy()
+elif accu_name=='multi':
+    accu_obj=accuracy.multi_accuracy.multi_accuracy()
 
 opt_name=config_obj.opt_type
 opt_obj=None

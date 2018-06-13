@@ -14,6 +14,7 @@ class config_st:
     class_num=None
     ckpt_name=''
     is_training=None
+    program_log_path=None
     def __init__(self):
         super(config_st, self).__init__()
         self.tfrecord_addr = './output/chamo.tfrecord'
@@ -32,3 +33,4 @@ class config_st:
         self.loading_his=False
         self.ckpt_name=''
         self.is_training=True
+        self.program_log_path='./program_logs/'

@@ -1,24 +1,32 @@
 # -*- coding: utf-8 -*-
 import os
+import time
 from collections import OrderedDict
 from pyexcel_xls import get_data
 from pyexcel_xls import save_data
 import shutil
 import filecmp
+import utils.logger as logger
 from data_scraping.materil_name import *
 
-excel_path = '/home/leo/Documents/chamo/food_material/V1.1.0.0525_1156.xlsx'
 
-pic_src_path = '/home/leo/Downloads/1000_work_set/5_29/all/1156_dish'
+TAG = __name__
 
-pic_des_path = '/home/leo/Downloads/chamo/train'
 
-pic_merge_path_train = '/home/leo/Downloads/chamo/train_merge'
+excel_path = 'E:/data/v1.0.0_0507.xlsx'
+
+pic_src_path = 'E:/1000_data/train_no_expand/'
+
+pic_des_path = 'E:/material_merge/'
+
+pic_merge_path_train = 'E:/material_merge/'
 
 pic_merge_path_test = 'E:\\only200_test'
 
 
-# materials = [[u'青椒'], [u'番茄', u'西红柿'], [u'鸡蛋'], [u'木耳']]
+
+
+materials = [[u'青椒'], [u'番茄', u'西红柿'], [u'鸡蛋'], [u'木耳']]
 
 SUF_LABEL = 'labelmat'
 
@@ -313,22 +321,53 @@ def get_matarray_num(mat_array, mat_name):
     return None
 
 
-
 # 比较两个文件是否相同
 def is_same_file(file_l, file_r):
     return filecmp.cmp(file_l, file_r)
 
 
+def split_img(img_root, des_img_root, each_folder_num):
+    imgs = os.listdir(img_root)
+    img_count = 0
+    folder_count = 0
+    cur_des_folder = ''
+    for img in imgs:
+        if img_count % each_folder_num == 0:
+            cur_des_folder = des_img_root + 'chamo_%05d/' % folder_count
+            folder_count = folder_count + 1
+            os.makedirs(cur_des_folder)
+            print('%d images splited' % img_count)
+        img_count = img_count + 1
+        shutil.move(img_root + img, cur_des_folder + img)
+
+
+def devide_pic(pic_src_path, pic_des_path, excel_path, materials, each_folder_num):
+    if not os.path.exists(pic_src_path) or not os.path.exists(excel_path):
+        logger.I(TAG, 'devide_pic: ' + pic_src_path + 'not exist')
+        print('devide_pic: ' + pic_src_path + 'not exist')
+        return
+    temp_path_mat = os.path.join(pic_src_path, 'temp_mat' + str(time.clock()))
+    if not os.path.exists(temp_path_mat):
+        os.mkdir(temp_path_mat)
+    mat_dict = get_mat_num(materials, excel_path)
+    create_and_copy(mat_dict, pic_src_path, temp_path_mat)
+    if not os.path.exists(pic_des_path):
+        os.makedirs(pic_des_path)
+    temp_path_merge = os.path.join(pic_src_path, 'temp_merge' + str(time.clock()))
+    merge_all(temp_path_mat, temp_path_merge, materials)
+    tag_path(temp_path_merge, materials)
+    split_img(temp_path_merge, pic_des_path, each_folder_num)
+
 if __name__ == '__main__':
-    #
+    devide_pic(pic_src_path, pic_des_path, excel_path, materials, 1000)
     #mat_dict = get_mat_num(material_list, excel_path)
     # # for i in mat_dict:
     # #     print(i, ':', mat_dict[i])
     #create_and_copy(mat_dict, pic_src_path, pic_des_path)
     # # merge_num(pic_des_path, pic_merge_path_train, data_scraping.materil_name.material_list, 4000)
-    merge_all(pic_des_path, pic_merge_path_train, material_list)
+    #merge_all(pic_des_path, pic_merge_path_train, material_list)
     # merge_num_test(pic_des_path, pic_merge_path_test, pic_merge_path_train, materials, 5)
-    tag_path(pic_merge_path_train, material_list)
+    #tag_path(pic_merge_path_train, material_list)
 
 
 

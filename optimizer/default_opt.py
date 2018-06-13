@@ -1,6 +1,7 @@
 import tensorflow as tf
 import time
 import os
+slim = tf.contrib.slim
 class default_opt:
     max_step=None
     debug_step_len=None
@@ -17,7 +18,8 @@ class default_opt:
         self.ckpt_name = ckpt_name
         print('choose default_opt')
     def run(self, loss, test_acc):
-        train_step = tf.train.AdamOptimizer(1e-4).minimize(loss)
+        optimizer = tf.train.AdamOptimizer(1e-4)
+        train_step = slim.learning.create_train_op(loss,optimizer)
         init_op = tf.global_variables_initializer()
         saver = tf.train.Saver()
         with tf.Session() as sess:
@@ -35,7 +37,7 @@ class default_opt:
                 after_time = time.perf_counter()
                 step_time = after_time - before_time
                 if i % self.debug_step_len == 0:
-                    test_acc_val=sess.run(test_acc)
+                    test_acc_val = sess.run(test_acc)
                     train_loss_val = sess.run(loss)
                     print("[step: %f][train loss: %f][perf accu: %f][accu: %f][prec: %f][recall: %f][step time: %f]" % (i, train_loss_val, test_acc_val[0], test_acc_val[1], test_acc_val[2], test_acc_val[3], step_time))
                     if i % (self.debug_step_len*20) == 0:

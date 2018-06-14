@@ -1,14 +1,17 @@
 import sys
 import config.chamo
 import config.chamo_full_run
+import config.chamo_class2
 import data_preprocessing.default_preprocess
 import data_preprocessing.test_preprocess
 import net.vgg16
 import net.mobilenet_v2
 import loss.default_loss
 import loss.entropy_loss
+import loss.class2_loss
 import accuracy.default_accuracy
 import accuracy.multi_accuracy
+import accuracy.class2_accuracy
 import optimizer.default_opt
 import utils.data_helper
 
@@ -19,6 +22,8 @@ if config_name=='chamo':
     config_obj=config.chamo.get_config()
 elif config_name=='chamo_full_run':
     config_obj = config.chamo_full_run.get_config()
+elif config_name == 'chamo_class2':
+    config_obj = config.chamo_class2.get_config()
 
 preprocess_name=config_obj.preprocess_type
 preprocess_obj=None
@@ -48,6 +53,8 @@ if loss_name=='default':
     loss_obj=loss.default_loss.default_loss()
 elif loss_name=='entropy_loss':
     loss_obj =loss.entropy_loss.entropy_loss()
+elif loss_name=='class2':
+    loss_obj =loss.class2_loss.class2_loss()
 
 accu_name=config_obj.accuracy_type
 accu_obj=None
@@ -55,6 +62,8 @@ if accu_name=='default':
     accu_obj=accuracy.default_accuracy.default_accuracy()
 elif accu_name=='multi':
     accu_obj=accuracy.multi_accuracy.multi_accuracy()
+elif accu_name=='class2':
+    accu_obj=accuracy.class2_accuracy.class2_accuracy()
 
 opt_name=config_obj.opt_type
 opt_obj=None

@@ -10,7 +10,7 @@ import os
 #the number of bit in label
 label_dim=102
 #root address of all the img folders
-file_root="/home/leo/Downloads/chamo/train_div/"
+file_root="/home/leo/Downloads/chamo/v3_material/green_pepper/"
 #root address to save the tfrecord
 tfrecord_root='/home/leo/Downloads/chamo/tfrecord/'
 #number of thread to execute the code
@@ -47,5 +47,5 @@ def check_and_convert(file_root, tfrecord_root, label_dim, thread_count):
 if __name__ == '__main__':
     checkFormat(file_root, thread_count)
     checkChannel(file_root, thread_count)
-    convertTFRecord(file_root, tfrecord_root, label_dim, thread_count)
+    #convertTFRecord(file_root, tfrecord_root, label_dim, thread_count)
 

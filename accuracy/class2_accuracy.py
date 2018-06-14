@@ -14,7 +14,11 @@ class class2_accuracy:
         labels_m = tf.gather(labels_m, idx, axis=1)
         inputs = tf.gather(inputs, idx, axis=1)
         inputs=tf.cast(inputs> 0.5, tf.float32)
-        inputs=tf.cast((tf.reduce_sum(tf.abs(labels_m - inputs),axis=0)<0.1), tf.float32)
+        inputs=tf.Print(inputs,[inputs],"acc predict: ", summarize=32)
+        labels_m=tf.Print(labels_m, [labels_m], "acc label: ", summarize=32)
+        #inputs = tf.Print(inputs, [(labels_m - inputs) < 0.1], "acc diff: ", summarize=32)
+        inputs=tf.cast(tf.abs(labels_m - inputs)<0.1, tf.float32)
+
         accuracy = tf.reduce_mean(inputs)
         accuracy = tf.Print(accuracy, [accuracy], 'accuracy: ')
         return accuracy

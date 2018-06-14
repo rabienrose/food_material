@@ -33,13 +33,12 @@ class default_opt:
             while True:
                 before_time = time.perf_counter()
                 i=i+1
-                sess.run(train_step)
+                [_, train_loss_val]=sess.run([train_step,loss])
                 after_time = time.perf_counter()
                 step_time = after_time - before_time
                 if i % self.debug_step_len == 0:
-                    test_acc_val = sess.run(test_acc)
-                    train_loss_val = sess.run(loss)
-                    print("[step: %f][step time: %f]" % (i,step_time))
+                    sess.run(test_acc)
+                    print("[step: %f][loss: %f][step time: %f]" % (i,train_loss_val,step_time,))
                     if i % (self.debug_step_len*20) == 0:
                         output_name=self.result_addr+'chamo_%f_%f' % (i, train_loss_val)
                         os.system('mkdir '+output_name)

@@ -147,14 +147,15 @@ def check_imgs(images, labels):
     with tf.Session() as sess:
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord)
-        image_batch_v, label_batch_v = sess.run([images, labels])
-        for k in range(len(image_batch_v)):
-            processed_img = image_batch_v[k]
-            print(label_batch_v[k])
-            show_img = processed_img + img_mean
-            show_img = abs(show_img) / 256.0
-            plt.imshow(show_img)
-            plt.show()
+        while True:
+            image_batch_v, label_batch_v = sess.run([images, labels])
+            for k in range(len(image_batch_v)):
+                processed_img = image_batch_v[k]
+                print(label_batch_v[k])
+                show_img = processed_img + img_mean
+                show_img = abs(show_img) / 256.0
+                plt.imshow(show_img)
+                plt.show()
         coord.request_stop()
         coord.join(threads)
 

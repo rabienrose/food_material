@@ -35,7 +35,7 @@ class default_preprocess:
             [image, label],
             batch_size=self.batchsize,
             num_threads=1,
-            capacity=5 * self.batchsize,
-            min_after_dequeue=2 * self.batchsize
+            capacity=40 * self.batchsize,
+            min_after_dequeue=38 * self.batchsize
         )
         return images, labels

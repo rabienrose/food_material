@@ -27,7 +27,7 @@ class test_preprocess:
             [image, label],
             batch_size=c,
             num_threads=1,
-            capacity=5 * c,
-            min_after_dequeue=2 * c
+            capacity=40 * c,
+            min_after_dequeue=38 * c
         )
         return images, labels

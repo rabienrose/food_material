@@ -7,7 +7,7 @@ def get_config():
     config.batchsize=32
     config.loss_type='entropy_loss'
     config.net_type = 'mobilenet_v2'
-    config.class_num = 102
+    config.class_num = 73
     config.result_addr = './output/'
     config.ckpt_name='chamo_150000.000000_0.033395_0.550000'
     config.loading_his = True

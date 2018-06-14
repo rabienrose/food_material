@@ -22,10 +22,12 @@ def convert_a_folder(folder_name,file_root,tfrecord_root, material_dict):
                     bit_pos=material_dict[folder_name]
                     bit_array[bit_pos]=1*2
                     #the first decimal indecate the true or false of a material, the second decimal inecates mask
+
                     if isTrue=='true':
                         bit_array[bit_pos] = bit_array[bit_pos]+1
                     else:
                         bit_array[bit_pos] = bit_array[bit_pos]+0
+                    print(bit_array)
                     example = tf.train.Example(features=tf.train.Features(
                         feature={
                             'label': tf.train.Feature(int64_list=tf.train.Int64List(value=bit_array)),
@@ -41,8 +43,8 @@ def convert_a_folder(folder_name,file_root,tfrecord_root, material_dict):
     tfrecord_writer.close()
 
 if __name__ == '__main__':
-    folder_name='青椒'
-    file_root='E:/data'
+    folder_name='green_pepper'
+    file_root='/home/leo/Downloads/chamo/v3_material'
     tfrecord_root = file_root+'/'+folder_name+'/tfrecord'
-    material_dict={'青椒':0, '鸡蛋':1, '炒肉':2}
+    material_dict={'green_pepper':0, 'egg':1, 'meat':2}
     convert_a_folder(folder_name, file_root, tfrecord_root, material_dict)

@@ -1,8 +1,8 @@
 from config.config_st import config_st
 def get_config():
     config=config_st()
-    config.tfrecord_addr='E:/data/青椒/tfrecord/'
-    config.tfrecord_test_addr = 'E:/data/青椒/tfrecord/'
+    config.tfrecord_addr='/home/leo/Downloads/chamo/v3_material/green_pepper/tfrecord/'
+    config.tfrecord_test_addr = '/home/leo/Downloads/chamo/v3_material/green_pepper/tfrecord/'
     config.debug_step_len = 100
     config.batchsize=16
     config.loss_type='class2'

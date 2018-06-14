@@ -20,9 +20,9 @@ class mobilenet_v2:
         self.global_pool = False
 
     def def_net(self, inputs):
-        with tf.contrib.slim.arg_scope(mnv2.training_scope(is_training=self.is_training)):
-            logits, endpoint = mnv2.mobilenet(inputs, num_classes=self.num_classes, reuse=tf.AUTO_REUSE)
-            return logits
+        #with tf.contrib.slim.arg_scope(mnv2.training_scope(is_training=self.is_training)):
+        logits, endpoint = mnv2.mobilenet(inputs, num_classes=self.num_classes, reuse=tf.AUTO_REUSE)
+        return logits
             
 
 

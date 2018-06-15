@@ -129,18 +129,18 @@ def eval_smooth(config_name, repeat_time):
     net_test = test_net_obj.def_net(images_test)
     inputs = tf.sigmoid(net_test)
     predict = tf.cast(inputs > 0.5, tf.float32)
-    accuracy_perfect, accuracy, precision, recall, acc_list, pre_list, rec_list = accu_obj.def_accuracy(net_test,
-                                                                                                        labels_test)
+    accuracy_perfect, accuracy, precision, recall, f1, acc_list, \
+        pre_list, pre_list_nume, pre_list_deno, rec_list, \
+        rec_list_nume, rec_list_deno = accu_obj.def_accuracy(net_test, labels_test)
 
     saver = tf.train.Saver()
     with tf.Session() as sess:
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord)
         saver.restore(sess, config_obj.result_addr)
-  
 
         # len_all = len(labels_test)
-        each_size= labels_test.get_shape().as_list()[0]
+        each_size = labels_test.get_shape().as_list()[0]
         len_all = labels_test.get_shape().as_list()[1]
 
         acc_perfect_all = 0.0
@@ -149,13 +149,18 @@ def eval_smooth(config_name, repeat_time):
         recall_all = 0.0
 
         acc_list_all = np.zeros(shape=[len_all], dtype=np.float32)
-        acc_precision_all = np.zeros(shape=[len_all], dtype=np.float32)
-        acc_recall_all = np.zeros(shape=[len_all], dtype=np.float32)
+        precision_all_nume = np.zeros(shape=[len_all], dtype=np.float32)
+        precision_all_deno = np.zeros(shape=[len_all], dtype=np.float32)
+        precision_list_all = np.zeros(shape=[len_all], dtype=np.float32)
+        recall_all_nume = np.zeros(shape=[len_all], dtype=np.float32)
+        recall_all_deno = np.zeros(shape=[len_all], dtype=np.float32)
+        recall_list_all = np.zeros(shape=[len_all], dtype=np.float32)
 
         for repeat_i in range(1, repeat_time+1):
-            accuracy_perfect_v, accuracy_v, precision_v, recall_v, acc_list_v, pre_list_v, \
-            rec_list_v, predict_v, labels_test_v, images_test_v = sess.run(
-                [accuracy_perfect, accuracy, precision, recall, acc_list, pre_list, rec_list, predict, labels_test,
+            accuracy_perfect_v, accuracy_v, precision_v, recall_v, acc_list_v, pre_list_nume_v, pre_list_deno_v, \
+            rec_list_nume_v, rec_list_deno_v, predict_v, labels_test_v, images_test_v = sess.run(
+                [accuracy_perfect, accuracy, precision, recall, acc_list,
+                 pre_list_nume, pre_list_deno, rec_list_nume, rec_list_deno, predict, labels_test,
                  images_test])
 
             acc_perfect_all = acc_perfect_all + accuracy_perfect_v
@@ -164,9 +169,11 @@ def eval_smooth(config_name, repeat_time):
             recall_all = recall_all + recall_v
 
             acc_list_all = np.nan_to_num(acc_list_all) + acc_list_v
-            acc_precision_all = np.nan_to_num(acc_precision_all) + pre_list_v
-            acc_recall_all = np.nan_to_num(acc_recall_all) + rec_list_v
-            
+            precision_all_nume = precision_all_nume + pre_list_nume_v
+            precision_all_deno = precision_all_deno + pre_list_deno_v
+            recall_all_nume = recall_all_nume + rec_list_nume_v
+            recall_all_deno = recall_all_deno + rec_list_deno_v
+
             repeat_i = float(repeat_i)
             print('step: %d total pictures: %d' % (repeat_i, each_size*repeat_i))
             print('accuracy_prefect_v:', acc_perfect_all/repeat_i)
@@ -174,20 +181,20 @@ def eval_smooth(config_name, repeat_time):
             print('precision:', precision_all/repeat_i)
             print('recall:', recall_all/repeat_i)
             print('acc_list_v:', acc_list_all/repeat_i)
-            print('pre_list_v:', acc_precision_all/repeat_i)
-            print('rec_list_v:', acc_recall_all/repeat_i)
+            print('pre_list_v:', precision_all_nume/precision_all_deno)
+            print('rec_list_v:', recall_all_nume/recall_all_deno)
 
         coord.request_stop()
         coord.join(threads)
-    repeat_time = float(repeat_time+1)
+    repeat_time = float(repeat_time)
     acc_perfect_all = acc_perfect_all/repeat_time
     acc_all = acc_all/repeat_time
     precision_all = precision_all/repeat_time
     recall_all = recall_all/repeat_time
     acc_list_all = acc_list_all/repeat_time
-    acc_precision_all = acc_precision_all/repeat_time
-    acc_recall_all = acc_recall_all/repeat_time
-    return acc_perfect_all, acc_all, precision_all, recall_all, acc_list_all, acc_precision_all, acc_recall_all
+    precision_list_all = precision_all_nume/precision_all_deno
+    recall_list_all = recall_all_nume/recall_all_deno
+    return acc_perfect_all, acc_all, precision_all, recall_all, acc_list_all, precision_list_all, recall_list_all
 
 
 if __name__ == '__main__':
@@ -196,4 +203,4 @@ if __name__ == '__main__':
     #process_img.check_and_convert(pic_des_path_devider, pic_des_path_tfrecord, label_dim, 6)
     config.tfrecord_test_addr = pic_des_path_tfrecord
     config.tfrecord_addr = pic_des_path_tfrecord
-    eval_smooth('chamo', 100)
+    eval_smooth('chamo', 10)

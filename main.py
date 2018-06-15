@@ -44,7 +44,7 @@ if net_name=='vgg16':
     test_net_obj=net.vgg16.vgg16(False, 'vgg16', config_obj.class_num)
 elif net_name=='mobilenet_v2':
     net_obj = net.mobilenet_v2.mobilenet_v2(True, 'mobilenet_v2', config_obj.class_num)
-    test_net_obj = net.mobilenet_v2.mobilenet_v2(True, 'mobilenet_v2', config_obj.class_num)
+    test_net_obj = net.mobilenet_v2.mobilenet_v2(False, 'mobilenet_v2', config_obj.class_num)
 
 
 loss_name=config_obj.loss_type

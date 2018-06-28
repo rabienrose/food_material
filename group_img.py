@@ -9,6 +9,7 @@ import net.mobilenet_v2
 import shutil
 import utils.data_helper
 import utils.global_var
+import data_scraping.materil_name
 
 
 config_name=sys.argv[1]
@@ -21,24 +22,25 @@ elif config_name=='chamo_full_run':
 elif config_name == 'chamo_class2':
     config_obj = config.chamo_class2.get_config()
 
-group_root=config_obj.result_addr
-folder_true = group_root+'/true'
-folder_false = group_root+'/false'
+group_root='/home/leo/Downloads/chamo/v3_material/result'
+material_list = data_scraping.materil_name.material_list
+material_dict = {}
+count=0
+for item in material_list:
+    material_dict[item[0]]=count
+    count=count+1
+material_dict={'青椒': 0, '木耳': 1, '鸡蛋': 2}
+for material_name in material_dict.keys():
+    os.system('mkdir ' + group_root + '/' + material_name)
+    os.system('mkdir ' + group_root + '/' + material_name + '/positive')
+    os.system('mkdir ' + group_root + '/' + material_name + '/negative')
+materials = list(material_dict.keys())
 
-if not os.path.exists(folder_true):
-    os.makedirs(folder_true)
-if not os.path.exists(folder_false):
-    os.makedirs(folder_false)
-
-net_name=config_obj.net_type
 net_obj=None
-test_net_obj=None
-if net_name=='False':
-    net_obj=net.vgg16.vgg16(True, 'vgg16', config_obj.class_num)
-elif net_name=='mobilenet_v2':
-    net_obj = net.mobilenet_v2.mobilenet_v2(False, 'mobilenet_v2', config_obj.class_num)
+net_obj = net.mobilenet_v2.mobilenet_v2(False, 'mobilenet_v2', config_obj.class_num)
 
-image_root='E:/data/green_pepper/chamo_00049'
+#image_root='/home/leo/Downloads/chamo/v3_material/auto/青椒/positive'
+image_root='/home/leo/Downloads/chamo/v3_material/chamo_00001'
 
 image_raw_data = tf.placeholder(tf.string, None)
 
@@ -54,9 +56,10 @@ image=utils.data_helper._mean_image_subtraction(image)
 image=tf.expand_dims(image,[0])
 net_test = net_obj.def_net(image)
 inputs=tf.sigmoid(net_test)
-predict=tf.cast(inputs> 0.5, tf.float32)
+predict=tf.cast(inputs> 0.9, tf.float32)
 saver = tf.train.Saver()
 count=0
+
 with tf.Session() as sess:
     saver.restore(sess, config_obj.result_addr+config_obj.ckpt_name+'/chamo.ckpt')
     folders = os.listdir(image_root)
@@ -66,10 +69,12 @@ with tf.Session() as sess:
         print(img_name)
         image_raw_data_jpg = tf.gfile.FastGFile(img_name, 'rb').read()
         predict_v = sess.run(predict,feed_dict={image_raw_data: image_raw_data_jpg})
-        print(predict_v[0][0])
-        if predict_v[0][0]==1:
-            shutil.move(img_name, folder_true)
-        else:
-            shutil.move(img_name, folder_false)
-        if count>2500:
+        for m in range(len(predict_v[0])):
+            if predict_v[0][m]==1:
+                folder_true = group_root + '/' +materials[m]+'/positive'
+                shutil.copy(img_name, folder_true)
+            else:
+                folder_false = group_root + '/' + materials[m] + '/negative'
+                shutil.copy(img_name, folder_false)
+        if count>1000:
             break

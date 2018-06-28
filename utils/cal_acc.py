@@ -1,7 +1,7 @@
-TP=70
-TN=2462
-FP=30
-FN=91
+TP=114
+TN=2310
+FP=24
+FN=77
 recall = TP/(FN+TP)
 precision=TP/(TP+FP)
 accuracy=(TP+TN)/(TP+TN+FP+FN)

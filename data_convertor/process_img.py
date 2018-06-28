@@ -2,17 +2,18 @@ import data_convertor.imgutils
 import data_convertor.jpegcheck
 import data_convertor.img_2_tfrecord
 from multiprocessing import Pool
+import data_scraping.materil_name
 import os
 
 #if the code is executed in module, there will be no warning for the error. If you find the code exit
 #abnomally, use the log to find where the error is.
 
 #the number of bit in label
-label_dim=102
+label_dim=73
 #root address of all the img folders
-file_root="/home/leo/Downloads/chamo/v3_material/green_pepper/"
+file_root="/home/leo/Downloads/1000_work_set/5_29/all/1156_dish/"
 #root address to save the tfrecord
-tfrecord_root='/home/leo/Downloads/chamo/tfrecord/'
+tfrecord_root='/home/leo/Downloads/chamo/v2_material/test_tfrecord/'
 #number of thread to execute the code
 thread_count=6
 
@@ -45,7 +46,16 @@ def check_and_convert(file_root, tfrecord_root, label_dim, thread_count):
 
 
 if __name__ == '__main__':
+    material_list = data_scraping.materil_name.material_list
+    #material_list=[["青椒"],
+    #["鸡蛋"],
+    #["炒肉"]]
+    #file_list = os.listdir(file_root)
+    #count=0
+    #for item in file_list:
+    #    print(item)
     checkFormat(file_root, thread_count)
     checkChannel(file_root, thread_count)
+
     #convertTFRecord(file_root, tfrecord_root, label_dim, thread_count)
 

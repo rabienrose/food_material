@@ -28,6 +28,14 @@ class class2_accuracy:
         accuracy = 1-tf.reduce_mean(tf.reduce_sum(tf.cast(tf.abs(labels_m - inputs)> 0.9, tf.float32), axis=1))
         precision = tf.divide(tf.reduce_sum(inputs) - tf.reduce_sum(tf.cast(inputs - labels_m >= 1, tf.float32)), tf.reduce_sum(inputs)+0.000001)
         recall = tf.divide(tf.reduce_sum(labels_m) - tf.reduce_sum(tf.cast(labels_m - inputs >= 1, tf.float32)), tf.reduce_sum(labels_m)+0.000001)
-        f1 = tf.divide(2 * precision * recall, precision + recall)
-        accuracy = tf.Print(accuracy, [accuracy, precision, recall, f1], '[acc][prec][recall][f1]')
-        return accuracy
+
+        ema = tf.train.ExponentialMovingAverage(decay=0.99)
+
+        avg_op = ema.apply([accuracy, precision, recall])
+        precision_avg=ema.average(precision)
+        recall_avg = ema.average(recall)
+        accuracy_avg = ema.average(accuracy)
+        f1 = tf.divide(2 * precision_avg * recall_avg, precision_avg + recall_avg+0.000001)
+        accuracy_avg = tf.Print(accuracy_avg, [accuracy_avg, precision_avg, recall_avg, f1], '[acc][prec][recall][f1]')
+
+        return [avg_op, accuracy_avg]

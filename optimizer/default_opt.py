@@ -21,7 +21,9 @@ class default_opt:
         optimizer = tf.train.AdamOptimizer(1e-4)
         train_step = slim.learning.create_train_op(loss,optimizer)
         init_op = tf.global_variables_initializer()
-        saver = tf.train.Saver()
+        exclude = ['test']
+        variables_to_restore = slim.get_variables_to_restore(exclude=exclude)
+        saver = tf.train.Saver(variables_to_restore)
         with tf.Session() as sess:
             sess.run(init_op)
             coord = tf.train.Coordinator()

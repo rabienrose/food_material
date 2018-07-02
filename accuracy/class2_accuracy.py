@@ -29,7 +29,5 @@ class class2_accuracy:
         precision = tf.divide(tf.reduce_sum(inputs) - tf.reduce_sum(tf.cast(inputs - labels_m >= 1, tf.float32)), tf.reduce_sum(inputs)+0.000001)
         recall = tf.divide(tf.reduce_sum(labels_m) - tf.reduce_sum(tf.cast(labels_m - inputs >= 1, tf.float32)), tf.reduce_sum(labels_m)+0.000001)
         f1 = tf.divide(2 * precision * recall, precision + recall)
-        accuracy = tf.Print(accuracy, [labels_m], 'labels_m: ',summarize=60)
-        accuracy = tf.Print(accuracy, [inputs], 'inputs: ',summarize=60)
-        accuracy = tf.Print(accuracy, [accuracy, precision, recall, recall], 'accuracy: ')
+        accuracy = tf.Print(accuracy, [accuracy, precision, recall, f1], '[acc][prec][recall][f1]')
         return accuracy

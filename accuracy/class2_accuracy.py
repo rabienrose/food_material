@@ -25,12 +25,11 @@ class class2_accuracy:
         inputs = inputs * mask
         #because of the impact of mask. we consider the negative case, because all masked bit is positive
         #it means we calculate the error rate install of right rate
-        accuracy = 1-tf.reduce_mean(tf.reduce_sum(tf.cast(tf.abs(labels - inputs)> 0.9, tf.float32), axis=1))
-        precision = tf.divide(tf.reduce_sum(inputs) - tf.reduce_sum(tf.cast(inputs - labels >= 1, tf.float32)), tf.reduce_sum(inputs))
-        recall = tf.divide(tf.reduce_sum(labels) - tf.reduce_sum(tf.cast(labels - inputs >= 1, tf.float32)), tf.reduce_sum(labels))
+        accuracy = 1-tf.reduce_mean(tf.reduce_sum(tf.cast(tf.abs(labels_m - inputs)> 0.9, tf.float32), axis=1))
+        precision = tf.divide(tf.reduce_sum(inputs) - tf.reduce_sum(tf.cast(inputs - labels_m >= 1, tf.float32)), tf.reduce_sum(inputs)+0.000001)
+        recall = tf.divide(tf.reduce_sum(labels_m) - tf.reduce_sum(tf.cast(labels_m - inputs >= 1, tf.float32)), tf.reduce_sum(labels_m)+0.000001)
         f1 = tf.divide(2 * precision * recall, precision + recall)
-        accuracy = tf.Print(accuracy, [accuracy], 'accuracy: ')
-        accuracy = tf.Print(accuracy, [precision], 'precision: ')
-        accuracy = tf.Print(accuracy, [recall], 'recall: ')
-        accuracy = tf.Print(accuracy, [f1], 'f1: ')
+        accuracy = tf.Print(accuracy, [labels_m], 'labels_m: ',summarize=60)
+        accuracy = tf.Print(accuracy, [inputs], 'inputs: ',summarize=60)
+        accuracy = tf.Print(accuracy, [accuracy, precision, recall, recall], 'accuracy: ')
         return accuracy

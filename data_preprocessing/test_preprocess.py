@@ -22,12 +22,12 @@ class test_preprocess:
         image, label = utils.data_helper.get_raw_img(self.tfrecord_addr, self.class_num)
         train_image_size = utils.global_var._RESIZE_SIDE_MIN
         image = preprocess_for_train(image, train_image_size, train_image_size)
-        c=20
-        images, labels = tf.train.shuffle_batch(
+        c=10
+        images, labels = tf.train.batch(
             [image, label],
             batch_size=c,
             num_threads=1,
-            capacity=40 * c,
-            min_after_dequeue=38 * c
+            capacity=2 * c,
+
         )
         return images, labels

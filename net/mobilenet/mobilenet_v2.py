@@ -133,6 +133,7 @@ def mobilenet(input_tensor,
                      'multiplier parameter use "depth_multiplier" instead.')
   if finegrain_classification_mode:
     conv_defs = copy.deepcopy(conv_defs)
+    print("depth_multiplier: %f" % depth_multiplier)
     if depth_multiplier < 1:
       conv_defs['spec'][-1].params['num_outputs'] /= depth_multiplier
 

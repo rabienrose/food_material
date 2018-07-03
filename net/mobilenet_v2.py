@@ -21,7 +21,8 @@ class mobilenet_v2:
 
     def def_net(self, inputs):
         with tf.contrib.slim.arg_scope(mnv2.training_scope(is_training=self.is_training)):
-            logits, endpoint = mnv2.mobilenet(inputs, num_classes=self.num_classes, reuse=tf.AUTO_REUSE)
+            logits, endpoint = mnv2.mobilenet(inputs, num_classes=self.num_classes, reuse=tf.AUTO_REUSE,
+                                              depth_multiplier=0.25, finegrain_classification_mode=True)
             return logits
             
 

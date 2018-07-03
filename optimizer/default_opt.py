@@ -30,6 +30,7 @@ class default_opt:
             threads = tf.train.start_queue_runners(coord=coord)
             if self.loading_his:
                 saver.restore(sess, self.result_addr+self.ckpt_name+'/chamo.ckpt')
+            merge = tf.summary.merge_all()
             writer = tf.summary.FileWriter("logs/", sess.graph)
             i =-1
             while True:
@@ -39,8 +40,8 @@ class default_opt:
                 after_time = time.perf_counter()
                 step_time = after_time - before_time
                 if i % self.debug_step_len == 0:
-                    merge = tf.summary.merge_all()
-                    [_,summary]=sess.run([test_acc,merge])
+
+                    summary=sess.run(merge)
                     writer.add_summary(summary, i)
                     print("[step: %f][loss: %f][step time: %f]" % (i,train_loss_val,step_time,))
                     if i % (self.debug_step_len*20) == 0:

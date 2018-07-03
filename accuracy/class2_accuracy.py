@@ -39,9 +39,9 @@ class class2_accuracy:
             f1 = tf.divide(2 * precision_avg * recall_avg, precision_avg + recall_avg+0.000001)
             accuracy_avg = tf.Print(accuracy_avg, [accuracy_avg, precision_avg, recall_avg, f1], '[acc][prec][recall][f1]')
             tf.summary.histogram("predictions", inputs)
-            tf.summary.scalar('f1_train', accuracy)
-            tf.summary.scalar('accuracy_train', accuracy)
-            tf.summary.scalar('precision_train', precision)
-            tf.summary.scalar('recall_train', recall)
+            tf.summary.scalar('f1_test', f1)
+            tf.summary.scalar('accuracy_test', accuracy)
+            tf.summary.scalar('precision_test', precision)
+            tf.summary.scalar('recall_test', recall)
 
         return [avg_op, accuracy_avg]

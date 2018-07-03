@@ -20,4 +20,15 @@ class class2_loss:
         #mask = tf.Print(mask, [mask], "mask: ", summarize=32)
         loss_vec = tf.multiply(loss_vec, mask, name='chamo_mul')
         loss = tf.reduce_mean(loss_vec)
+        inputs_m = tf.cast(inputs > 0.9, tf.float32)
+        accuracy = 1 - tf.reduce_mean(tf.reduce_sum(tf.cast(tf.abs(labels_m - inputs_m) > 0.9, tf.float32), axis=1))
+        precision = tf.divide(tf.reduce_sum(inputs_m) - tf.reduce_sum(tf.cast(inputs_m - labels_m >= 1, tf.float32)),
+                              tf.reduce_sum(inputs_m) + 0.000001)
+        recall = tf.divide(tf.reduce_sum(labels_m) - tf.reduce_sum(tf.cast(labels_m - inputs_m >= 1, tf.float32)),
+                           tf.reduce_sum(labels_m) + 0.000001)
+        f1 = tf.divide(2 * precision * recall, precision + recall + 0.000001)
+        #tf.summary.scalar('f1_test', f1)
+        #tf.summary.scalar('accuracy_test', accuracy)
+        #tf.summary.scalar('precision_test', precision)
+        #tf.summary.scalar('recall_test', recall)
         return loss

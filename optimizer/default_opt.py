@@ -39,7 +39,9 @@ class default_opt:
                 after_time = time.perf_counter()
                 step_time = after_time - before_time
                 if i % self.debug_step_len == 0:
-                    sess.run(test_acc)
+                    merge = tf.summary.merge_all()
+                    [_,summary]=sess.run([test_acc,merge])
+                    writer.add_summary(summary, i)
                     print("[step: %f][loss: %f][step time: %f]" % (i,train_loss_val,step_time,))
                     if i % (self.debug_step_len*20) == 0:
                         output_name=self.result_addr+'chamo_%f_%f' % (i, train_loss_val)

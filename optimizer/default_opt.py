@@ -18,10 +18,14 @@ class default_opt:
         self.ckpt_name = ckpt_name
         print('choose default_opt')
     def run(self, loss, test_acc):
+        tvars = tf.trainable_variables()
+        g_vars = [var for var in tvars if 'MobilenetV2/Logits' in var.name]
+        print(g_vars)
         optimizer = tf.train.AdamOptimizer(1e-4)
-        train_step = slim.learning.create_train_op(loss,optimizer)
+        train_step = slim.learning.create_train_op(loss,optimizer,update_ops=g_vars)
         init_op = tf.global_variables_initializer()
-        exclude = ['test']
+        exclude = ['test','MobilenetV2/Logits']
+
         variables_to_restore = slim.get_variables_to_restore(exclude=exclude)
         saver = tf.train.Saver(variables_to_restore)
         with tf.Session() as sess:

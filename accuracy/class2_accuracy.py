@@ -17,31 +17,36 @@ class class2_accuracy:
             # labels_m = tf.gather(labels_m, idx, axis=1)
             # inputs = tf.gather(inputs, idx, axis=1)
 
-            inputs=tf.cast(inputs> 0.9, tf.float32)
+            inputs_m=tf.cast(inputs > 0.5, tf.float32)
 
             #inputs = tf.Print(inputs, [mask], "masks: ", summarize=60)
-            #inputs = tf.Print(inputs, [labels_m], "label: ", summarize=60)
-            #inputs = tf.Print(inputs, [inputs], "predi: ", summarize=60)
+            #labels_m = tf.Print(labels_m, [labels_m], "label: ", summarize=60)
+            #inputs_m = tf.Print(inputs_m, [inputs_m], "predi: ", summarize=60)
 
-            inputs = inputs * mask
+            inputs_m = inputs_m * mask
             #because of the impact of mask. we consider the negative case, because all masked bit is positive
             #it means we calculate the error rate install of right rate
-            accuracy = 1-tf.reduce_mean(tf.reduce_sum(tf.cast(tf.abs(labels_m - inputs)> 0.9, tf.float32), axis=1))
-            precision = tf.divide(tf.reduce_sum(inputs) - tf.reduce_sum(tf.cast(inputs - labels_m >= 1, tf.float32)), tf.reduce_sum(inputs)+0.000001)
-            recall = tf.divide(tf.reduce_sum(labels_m) - tf.reduce_sum(tf.cast(labels_m - inputs >= 1, tf.float32)), tf.reduce_sum(labels_m)+0.000001)
+            accuracy = 1-tf.reduce_mean(tf.reduce_sum(tf.cast(tf.abs(labels_m - inputs_m)> 0.9, tf.float32), axis=1))
+            precision = tf.divide(tf.reduce_sum(inputs_m) - tf.reduce_sum(tf.cast(inputs_m - labels_m >= 1, tf.float32)), tf.reduce_sum(inputs_m)+0.000001)
+            recall = tf.divide(tf.reduce_sum(labels_m) - tf.reduce_sum(tf.cast(labels_m - inputs_m >= 1, tf.float32)), tf.reduce_sum(labels_m)+0.000001)
 
-            ema = tf.train.ExponentialMovingAverage(decay=0.9)
+            loss_vec = tf.nn.sigmoid_cross_entropy_with_logits(logits=inputs, labels=labels_m)
+            loss_vec = tf.multiply(loss_vec, mask, name='chamo_mul')
+            loss = tf.reduce_mean(loss_vec)
 
-            avg_op = ema.apply([accuracy, precision, recall])
-            precision_avg=ema.average(precision)
-            recall_avg = ema.average(recall)
-            accuracy_avg = ema.average(accuracy)
-            f1 = tf.divide(2 * precision_avg * recall_avg, precision_avg + recall_avg+0.000001)
-            accuracy_avg = tf.Print(accuracy_avg, [accuracy_avg, precision_avg, recall_avg, f1], '[acc][prec][recall][f1]')
+            #ema = tf.train.ExponentialMovingAverage(decay=0.9)
+
+            #avg_op = ema.apply([accuracy, precision, recall])
+            #precision_avg=ema.average(precision)
+            #recall_avg = ema.average(recall)
+            #accuracy_avg = ema.average(accuracy)
+            f1 = tf.divide(2 * precision * recall, precision + recall+0.000001)
+            #accuracy_avg = tf.Print(accuracy_avg, [accuracy_avg, precision_avg, recall_avg, f1], '[acc][prec][recall][f1]')
             tf.summary.histogram("predictions", inputs)
             tf.summary.scalar('f1_test', f1)
             tf.summary.scalar('accuracy_test', accuracy)
             tf.summary.scalar('precision_test', precision)
             tf.summary.scalar('recall_test', recall)
+            tf.summary.scalar('loss', loss)
 
-        return [avg_op, accuracy_avg]
+        return accuracy

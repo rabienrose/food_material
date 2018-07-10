@@ -11,7 +11,7 @@ import os
 #the number of bit in label
 label_dim=73
 #root address of all the img folders
-file_root="/home/leo/Downloads/1000_work_set/5_29/all/1156_dish/"
+file_root="/home/leo/Documents/chamo/transfer/tool/img/re2"
 #root address to save the tfrecord
 tfrecord_root='/home/leo/Downloads/chamo/v2_material/test_tfrecord/'
 #number of thread to execute the code
@@ -20,17 +20,17 @@ thread_count=6
 
 def checkFormat(file_root, thread_count):
     p = Pool(processes=thread_count)
-    file_list = os.listdir(file_root)
-    for file_name in file_list:
-        p.apply_async(data_convertor.jpegcheck.jpeg_check, args=(file_root+file_name,))
+    #file_list = os.listdir(file_root)
+    #for file_name in file_root:
+    p.apply_async(data_convertor.jpegcheck.jpeg_check, args=(file_root,))
     p.close()
     p.join()
 
 
 def checkChannel(file_root, thread_count):
-    file_list = os.listdir(file_root)
-    for file_name in file_list:
-        data_convertor.imgutils.main(file_root+file_name, '*.jpg', '1-2-3', thread_count)
+    #file_list = os.listdir(file_root)
+    #for file_name in file_root:
+    data_convertor.imgutils.main(file_root, '*.jpg', '1-2-3', thread_count)
 
 
 def convertTFRecord(file_root, tfrecord_root, label_dim, thread_count):

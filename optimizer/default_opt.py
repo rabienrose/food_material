@@ -22,7 +22,8 @@ class default_opt:
         g_vars = [var for var in tvars if 'MobilenetV2/Logits' in var.name]
         print(g_vars)
         optimizer = tf.train.AdamOptimizer(1e-4)
-        train_step = slim.learning.create_train_op(loss,optimizer,update_ops=g_vars)
+        #train_step = slim.learning.create_train_op(loss,optimizer,update_ops=g_vars)
+        train_step = slim.learning.create_train_op(loss, optimizer)
         init_op = tf.global_variables_initializer()
         exclude = ['test','MobilenetV2/Logits']
 

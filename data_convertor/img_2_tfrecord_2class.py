@@ -13,7 +13,8 @@ def convert_a_folder(file_root,tfrecord_root, material_dict):
     material_list=[]
     for material_name in material_dict:
         for isTrue in ['positive','negative']:
-            folder_addr=file_root + '/' + material_name + '/'+isTrue
+            folder_addr=file_root+'/' + material_name+'/'+isTrue
+            #folder_addr = file_root + '/' + isTrue
             img_list = os.listdir(folder_addr)
             for img_name in img_list:
                 if img_name.find('.jpg'):
@@ -68,15 +69,13 @@ def convert_a_folder(file_root,tfrecord_root, material_dict):
     tfrecord_writer.close()
 
 if __name__ == '__main__':
-    file_root='/home/leo/Downloads/chamo/v3_material/m_all'
-    tfrecord_root = '/home/leo/Downloads/chamo/v3_material/m_all_tfrecord'
+    file_root = '/home/leo/Downloads/chamo/v3_material/m_all/all/test'
+    tfrecord_root = '/home/leo/Downloads/chamo/v3_material/m_all/all/test/tfrecord'
 
     material_list = data_scraping.materil_name.material_list
     material_dict = {}
-    count=0
+    count = 0
     for item in material_list:
-        material_dict[item[0]]=count
-        count=count+1
-        #material_dict = {'青椒': 0, '木耳': 1, '鸡蛋': 2}
-        #material_dict = {'青椒': 0}
+        material_dict[item[0]] = count
+        count = count + 1
     convert_a_folder(file_root, tfrecord_root, material_dict)

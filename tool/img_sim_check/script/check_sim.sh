@@ -1,14 +1,7 @@
-db_img_root=/home/rviz/Documents/img_sim_check/script/test1
-query_img_root=/home/rviz/Documents/img_sim_check/script/test2
+db_img_root=$1
+query_img_root=$2
 
-exe_addr=../build/check_simi
-if [[ -f img_list.txt ]]; then
-    rm img_list.txt
-fi
-
-if [[ -f query_list.txt ]]; then
-    rm query_list.txt
-fi
+exe_addr=/home/leo/Documents/chamo/transfer/tool/img_sim_check/build/check_simi
 
 for f in $(find ${db_img_root} -name '*.jpg')
 do

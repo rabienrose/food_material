@@ -29,6 +29,9 @@ class default_opt:
 
         variables_to_restore = slim.get_variables_to_restore(exclude=exclude)
         saver = tf.train.Saver(variables_to_restore)
+        exclude = ['test']
+        variables_to_restore = slim.get_variables_to_restore(exclude=exclude)
+        saver1=tf.train.Saver(variables_to_restore)
         with tf.Session() as sess:
             sess.run(init_op)
             coord = tf.train.Coordinator()
@@ -45,13 +48,11 @@ class default_opt:
                 after_time = time.perf_counter()
                 step_time = after_time - before_time
                 if i % self.debug_step_len == 0:
-
                     summary=sess.run(merge)
                     writer.add_summary(summary, i)
                     print("[step: %f][loss: %f][step time: %f]" % (i,train_loss_val,step_time,))
                     if i % (self.debug_step_len*20) == 0:
-                        output_name=self.result_addr+'chamo_%f_%f' % (i, train_loss_val)
-                        os.system('mkdir '+output_name)
-                        saver.save(sess, output_name+'/chamo.ckpt')
+                        output_name=self.result_addr+"cur_cp"
+                        saver1.save(sess, output_name+'/chamo.ckpt')
             coord.request_stop()
             coord.join(threads)

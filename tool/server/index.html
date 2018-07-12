@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+<script src="jquery.min.js"></script>
+<script src="ajaxfileupload.js"></script>
+<script>
+$(document).ready(function(){
+    $("#show_result").click(function(){
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:8080/api/chamo/get_result",
+            dataType: 'json',
+            success: function(data) {
+                $("#result").empty()
+                for (var i=0;i<data.result.length;i++){
+                    str='<img style="height:300px" src="http://127.0.0.1/result/'+data.result[i]+'">';
+                    $("#result").append(str);
+                }
+            },
+        })
+    });
+    $("#evalu").click(function(){
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:8080/api/chamo/evaluation",
+            dataType: 'json',
+            success: function(data) {
+                alert("eval completed!");
+            },
+        })
+    });
+    $("#tensorboard").click(function(){
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:8080/api/chamo/tensorboard",
+            dataType: 'json',
+            success: function(data) {
+
+            },
+        })
+    });
+    $("#Training").click(function(){
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:8080/api/chamo/train",
+            dataType: 'json',
+            success: function(data) {
+
+            },
+        })
+    });
+    $("#conv_tfrecord").click(function(){
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:8080/api/chamo/conv_tfrecord",
+            dataType: 'json',
+            success: function(data) {
+                alert("convert completed!");
+            },
+        })
+    });
+    $("#train_s_t").click(function(){
+        $.ajax({
+            type: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            data:'{"proc_name":"python", "keyword":"main.py"}',
+            url: "http://127.0.0.1:8080/api/chamo/check_proc",
+            dataType: 'json',
+            success: function(data) {
+                if (data.re==1){
+                    $("#train_s").html("training")
+                }else{
+                    $("#train_s").html("not training")
+                }
+            },
+        })
+    });
+});
+
+$(function () {
+    $("#saveImg").click(function () {
+        var ths=$('#fileImg');
+        if (ths.val().length <= 0) {
+            alert("plesae specify a file");
+            return false;
+        }
+        ajaxFileUpload("http://127.0.0.1:8080/api/chamo/img_upload", 'fileImg');
+        return true;
+    })
+})
+
+$(function () {
+    $("#savetrain").click(function () {
+        var ths=$('#filetrain');
+        if (ths.val().length <= 0) {
+            alert("plesae specify a file");
+            return false;
+        }
+        ajaxFileUpload("http://127.0.0.1:8080/api/chamo/train_upload", 'filetrain');
+        return true;
+    })
+})
+
+function ajaxFileUpload(addr, eleId) {
+    $.ajaxFileUpload({
+        url:addr,
+        type: 'post',
+        secureuri: false,
+        fileElementId: eleId,
+        dataType: 'constant',
+        success: function(data) {
+            alert("upload success!");
+        },
+        error: function (data, status, e)
+        {
+
+        }
+    })
+    return false;
+}
+</script>
+</head>
+<body>
+
+<button id="show_result">show result</button>
+<button id="evalu">evaluation</button>
+<button id="tensorboard">Toggle Tensorboard</button>
+<button id="Training">Toggle Training</button>
+<button id="train_s_t">Check Training Statues</button>
+<button id="conv_tfrecord">Convert Tfrecord</button>
+<br>
+<div id="train_s"></div>
+<br>
+    <input id="fileImg" type="file" name="fileImg" size="80" />
+    <input id="saveImg" type="button" value="evl img"  />
+<br>
+    <input id="filetrain" type="file" name="filetrain" size="80" />
+    <input id="savetrain" type="button" value="train img"  />
+
+<div id="result"></div>
+</body>
+</html>

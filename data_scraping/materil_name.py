@@ -5,9 +5,7 @@ material_list=[
     ["豆腐"],
     ["虾仁"],
     ["黄瓜"],
-    ["排骨"],
-    ["花菜"],
-    ["白菜"]
+    ["排骨"]
 ]
 
 def get_matarray_num(mat_array, mat_name):

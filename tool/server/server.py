@@ -17,29 +17,55 @@ import group_img
 import data_convertor.img_2_tfrecord_2class
 import shutil
 import subprocess
+import tool.scrap_img.scrap_img
+import tool.scrap_img.scrap_sougou
+import data_convertor.process_img
+import tool.server.update_train_imgs
+import data_scraping.materil_name
 
 app = Flask(__name__)
 PROD = True
 CORS(app)
 
-result_root='result'
-eval_img_root='img_eval'
-temp_root='temp'
-train_img_root='/home/leo/Downloads/chamo/mat_service/train'
-train_tfrecord_root='/home/leo/Downloads/chamo/mat_service/train_tfrecord'
-train_temp='/home/leo/Downloads/chamo/mat_service/train_temp'
+data_root='/home/leo/Downloads/chamo/mat_service'
+result_root=data_root+'/result'
+eval_img_root=data_root+'/img_eval'
+temp_root=data_root+'/temp'
+train_img_root=data_root+'/train'
+test_img_root=data_root+'/test'
+train_tfrecord_root=data_root+'/train_tfrecord'
+test_tfrecord_root=data_root+'/test_tfrecord'
+upload_temp=data_root+'/upload_temp'
+upload_cache=data_root+'/upload_cache'
+scrap_root=data_root+'/scrap_re'
+result_group=data_root+'/result_group'
+base_cp=data_root+'/checkpoint/base_cp'
+cur_cp=data_root+'/checkpoint/cur_cp'
+release_cp=data_root+'/checkpoint/release_cp'
+logs=data_root+'/checkpoint/logs'
+cur_material_file=data_root + '/materials.txt'
+release_material_file=data_root + '/materials_release.txt'
 
-def get_materil_list():
-    folders = os.listdir(train_img_root)
-    m_list=[]
-    for m in folders:
-        m_list.append([m])
+def get_materil_list(is_release):
+    file_name=cur_material_file
+    if is_release:
+        file_name=release_material_file
+    with open(file_name, 'r') as f:
+        m_list = []
+        for line in f.readlines():
+            m_list.append([line[0:-1]])
     return m_list
+
+def save_materil_list():
+    with open(cur_material_file, 'w') as f:
+        folders = os.listdir(train_img_root)
+        for m in folders:
+            f.write(m+"\n")
 
 def create_dir(dir):
     if os.path.exists(dir):
         shutil.rmtree(dir)
-        os.mkdir(dir)
+    os.mkdir(dir)
 
 def check_proc(proc_name, keyword):
     p = subprocess.Popen('ps -ef|grep ' + keyword, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -47,7 +73,12 @@ def check_proc(proc_name, keyword):
     for line in p.stdout.readlines():
         line_str = str(line)
         if proc_name in line_str:
-            proc_id = line_str.split(' ')[6]
+            splited=line_str.split(' ')
+            print(splited)
+            for item in splited:
+                if item.isdigit():
+                    proc_id=item
+                    break
             break
     return proc_id
 
@@ -63,6 +94,24 @@ def turn_proc(cmd, proc_name, keyword):
     if re==False:
         os.system(cmd+' &')
 
+def zip_dir(dirname,zipfilename):
+    filelist = []
+    if os.path.isfile(dirname):
+        filelist.append(dirname)
+    else :
+        for root, dirs, files in os.walk(dirname):
+            for dir in dirs:
+                filelist.append(os.path.join(root,dir))
+            for name in files:
+                filelist.append(os.path.join(root, name))
+
+    zf = zipfile.ZipFile(zipfilename, "w", zipfile.zlib.DEFLATED)
+    for tar in filelist:
+        arcname = tar[len(dirname):]
+        #print arcname
+        zf.write(tar,arcname)
+    zf.close()
+
 @app.route('/api/chamo/img_proc', methods=['POST'])
 def handle_api_img_proc():
     ret = dict(code=0, status='OK', payload_err_index=[])
@@ -70,6 +119,14 @@ def handle_api_img_proc():
     img_payload = payload.get('name', '')
     print(img_payload)
     ret['name'] = 'chamo'
+    return jsonify(ret)
+
+@app.route('/api/chamo/release_model', methods=['POST'])
+def handle_api_release_model():
+    ret = dict(code=0, status='OK', payload_err_index=[])
+    create_dir(release_cp)
+    tool.server.update_train_imgs.copy_files(cur_cp,release_cp)
+    shutil.copyfile(cur_material_file, release_material_file)
     return jsonify(ret)
 
 @app.route('/api/chamo/img_upload', methods=['POST'])
@@ -86,30 +143,37 @@ def handle_api_img_upload():
         f_zip.extract(f, eval_img_root)
     return jsonify(ret)
 
-@app.route('/api/chamo/train_upload', methods=['POST'])
-def handle_api_train_upload():
-    create_dir(temp_root)
-    create_dir(train_temp)
+@app.route('/api/chamo/merge_upload', methods=['POST'])
+def handle_api_merge_upload():
     ret = dict(code=0, status='OK', payload_err_index=[])
-    print(request.files)
-    file = request.files['filetrain']
-    zip_file=temp_root+'/'+file.filename
-    file.save(zip_file)
-    f_zip = zipfile.ZipFile(zip_file, 'r')
-    for f in f_zip.namelist():
-        f_zip.extract(f, train_temp)
-    turn_proc('python update_train_imgs.py', 'python', 'update_train_imgs.py')
+    create_dir(result_root)
+    files=os.listdir(upload_cache)
+    for file_t in files:
+        zip_file=upload_cache+'/'+file_t
+        f_zip = zipfile.ZipFile(zip_file, 'r')
+        create_dir(upload_temp)
+        for f in f_zip.namelist():
+            f_zip.extract(f, upload_temp)
+        if file_t=='train.zip':
+            tool.server.update_train_imgs.main(upload_temp, train_img_root)
+        else:
+            tool.server.update_train_imgs.main(upload_temp, test_img_root)
+    save_materil_list()
     return jsonify(ret)
 
 @app.route('/api/chamo/evaluation', methods=['POST'])
 def handle_api_evaluation():
     create_dir(result_root)
+    create_dir(result_group)
     ret = dict(code=0, status='OK', payload_err_index=[])
     imgs = os.listdir(eval_img_root)
     img_data_list = []
     for img_name in imgs:
         img_data_list.append(eval_img_root + '/' + img_name)
-    group_img.process_img(img_data_list, result_root)
+    checkpt=release_cp+'/chamo.ckpt'
+    group_img.process_img(img_data_list, result_root,result_group, checkpt, get_materil_list(True))
+    zip_dir(result_group, data_root + '/group.zip')
+    ret['re']='group.zip'
     return jsonify(ret)
 
 @app.route('/api/chamo/get_result', methods=['POST'])
@@ -123,28 +187,39 @@ def handle_api_get_result():
 
 @app.route('/api/chamo/conv_tfrecord', methods=['POST'])
 def handle_api_conv_tfrecord():
+    create_dir(train_tfrecord_root)
+    create_dir(test_tfrecord_root)
     ret = dict(code=0, status='OK', payload_err_index=[])
     material_dict = {}
     count = 0
-    material_list=get_materil_list()
+    material_list=get_materil_list(False)
     for item in material_list:
         material_dict[item[0]] = count
         count = count + 1
     data_convertor.img_2_tfrecord_2class.convert_a_folder(train_img_root, train_tfrecord_root, material_dict)
+    data_convertor.img_2_tfrecord_2class.convert_a_folder(test_img_root, test_tfrecord_root, material_dict)
     return jsonify(ret)
 
 @app.route('/api/chamo/train', methods=['POST'])
 def handle_api_train():
     ret = dict(code=0, status='OK', payload_err_index=[])
-    create_dir('../../output')
-    turn_proc('python ../../main.py chamo_class2', 'python', 'main.py')
+    if check_proc('python', 'main.py')=='-1':
+        create_dir(cur_cp)
+        create_dir(logs)
+    turn_proc('python ../../main.py chamo_class2 '+str(len(get_materil_list(False))), 'python', 'main.py')
+    return jsonify(ret)
+
+@app.route('/api/chamo/update_material', methods=['POST'])
+def handle_api_update_material():
+    ret = dict(code=0, status='OK', payload_err_index=[])
+    save_materil_list()
+    ret['re']=get_materil_list(False)
     return jsonify(ret)
 
 @app.route('/api/chamo/tensorboard', methods=['POST'])
 def handle_api_tensorboard():
     ret = dict(code=0, status='OK', payload_err_index=[])
-    create_dir('../../logs')
-    turn_proc('tensorboard --logdir=./', 'tensorboard', 'logdir')
+    turn_proc('tensorboard --logdir='+logs, 'tensorboard', 'logdir')
     return jsonify(ret)
 
 @app.route('/api/chamo/check_proc', methods=['POST'])
@@ -160,6 +235,41 @@ def handle_api_check_proc():
         ret['re']=0
     else:
         ret['re'] = 1
+    return jsonify(ret)
+
+@app.route('/api/chamo/scrap', methods=['POST'])
+def handle_api_scrap():
+    ret = dict(code=0, status='OK', payload_err_index=[])
+    payload = request.json
+    key_word_strs = payload.get('key_word', '')
+    isPosi = payload.get('isPosi', '')
+    maxcount = payload.get('maxcount', '')
+    print(key_word_strs)
+    print(isPosi)
+    print(maxcount)
+    key_words = key_word_strs.split(',')
+    if key_word_strs=='':
+        create_dir(scrap_root)
+        os.mkdir(scrap_root + '/positive')
+        os.mkdir(scrap_root + '/negative')
+        return jsonify(ret)
+    for key_word in key_words:
+        create_dir(temp_root)
+        scrap_root_sub=scrap_root
+        if isPosi=='1':
+            tool.scrap_img.scrap_img.scrap(key_word, temp_root, int(maxcount))
+            scrap_root_sub=scrap_root+'/positive'
+        else:
+            tool.scrap_img.scrap_sougou.getSoGoImG(key_word, int(maxcount), temp_root)
+            scrap_root_sub = scrap_root + '/negative'
+        data_convertor.process_img.checkFormat(temp_root, 6)
+        data_convertor.process_img.checkChannel(temp_root, 6)
+        files = os.listdir(scrap_root_sub)
+        if len(files)>0:
+            tool.server.update_train_imgs.check_sim(temp_root, scrap_root_sub)
+        tool.server.update_train_imgs.copy_files(temp_root, scrap_root_sub)
+    zip_dir(scrap_root, data_root+'/scrap.zip')
+    ret['re']='scrap.zip'
     return jsonify(ret)
 
 ########################################################

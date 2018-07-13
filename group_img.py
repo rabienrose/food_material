@@ -8,12 +8,9 @@ import net.mobilenet_v2
 import shutil
 import utils.data_helper
 import utils.global_var
-import data_scraping.materil_name
 
-checkpt='/home/leo/Documents/chamo/transfer/output/chamo_8000.000000_0.001457/chamo.ckpt'
 
-def process_img(imgs, re_dir):
-    material_list = data_scraping.materil_name.material_list
+def process_img(imgs, re_dir,result_group, checkpt, material_list):
     net_obj = net.mobilenet_v2.mobilenet_v2(False, 'mobilenet_v2', len(material_list))
     image_raw_data = tf.placeholder(tf.string, None)
     img_data_jpg = tf.image.decode_jpeg(image_raw_data)
@@ -31,6 +28,10 @@ def process_img(imgs, re_dir):
     predict=tf.cast(inputs> 0.4, tf.float32)
     saver = tf.train.Saver()
     count=0
+    for material_name in material_list:
+        os.system('mkdir ' + result_group + '/' + material_name[0])
+        os.system('mkdir ' + result_group + '/' + material_name[0] + '/positive')
+        os.system('mkdir ' + result_group + '/' + material_name[0] + '/negative')
 
     with tf.Session() as sess:
         saver.restore(sess, checkpt)
@@ -42,18 +43,25 @@ def process_img(imgs, re_dir):
             print(predict_v)
             for i in range(len(predict_v[0])):
                 if predict_v[0][i] == 1:
-                    mat_show.append(data_scraping.materil_name.material_list[i])
+                    mat_show.append(material_list[i])
             print(mat_show)
             # show_img = img_data
             show_img = abs(img_data) / 256.0
             plt.imshow(show_img)
             zhfont = matplotlib.font_manager.FontProperties(fname='/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc')
             for i in range(len(mat_show)):
-                plt.text(150, 25 * (i + 1), str(mat_show[i]), fontproperties=zhfont, fontsize=40, color='red')
+                plt.text(150, 25 * (i + 1), str(mat_show[i]), fontproperties=zhfont, fontsize=20, color='red')
             #plt.show()
             file_name=image_name.split('/')[-1]
             plt.savefig(re_dir+'/'+file_name)
             plt.close('all')
+            for m in range(len(predict_v[0])):
+                if predict_v[0][m] == 1:
+                    folder_true = result_group + '/' + material_list[m][0] + '/positive'
+                    shutil.copy(image_name, folder_true)
+                else:
+                    folder_false = result_group + '/' + material_list[m][0] + '/negative'
+                    shutil.copy(image_name, folder_false)
 
 
 if __name__ == '__main__':

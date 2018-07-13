@@ -21,11 +21,13 @@ $(document).ready(function(){
         })
     });
     $("#evalu").click(function(){
+        $("#status_s").html('processing, please wait!!!!!!!!')
         $.ajax({
             type: 'POST',
             url: "http://127.0.0.1:8080/api/chamo/evaluation",
             dataType: 'json',
             success: function(data) {
+                $("#status_s").html('')
                 alert("eval completed!");
             },
         })
@@ -51,11 +53,13 @@ $(document).ready(function(){
         })
     });
     $("#conv_tfrecord").click(function(){
+        $("#status_s").html('processing, please wait!!!!!!!!')
         $.ajax({
             type: 'POST',
             url: "http://127.0.0.1:8080/api/chamo/conv_tfrecord",
             dataType: 'json',
             success: function(data) {
+                $("#status_s").html('')
                 alert("convert completed!");
             },
         })
@@ -78,6 +82,99 @@ $(document).ready(function(){
             },
         })
     });
+    $("#posi_scrap_btn").click(function(){
+        key_word=$("#posi_keyword_input").val()
+        key_word=key_word.replace(/\r\n/g,",")
+        key_word=key_word.replace(/\n/g,",");
+        console.log(key_word)
+        scrap_num=$("#scrap_num").val()
+        data_c='{"key_word":"'+key_word+'", "isPosi":"1", "maxcount":"'+scrap_num+'"}'
+        $("#status_s").html('processing, please wait!!!!!!!!')
+        $.ajax({
+            type: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            data:data_c,
+            url: "http://127.0.0.1:8080/api/chamo/scrap",
+            dataType: 'json',
+            success: function(data) {
+                $("#status_s").html('')
+                $("#scrap_re").html('<a href="'+data.re+'" >download</a>')
+            },
+        })
+    });
+    $("#neg_scrap_btn").click(function(){
+        key_word=$("#posi_keyword_input").val()
+        key_word=key_word.replace(/\r\n/g,",")
+        key_word=key_word.replace(/\n/g,",");
+        scrap_num=$("#scrap_num").val()
+        data_c='{"key_word":"'+key_word+'", "isPosi":"0", "maxcount":"'+scrap_num+'"}'
+        $("#status_s").html('processing, please wait!!!!!!!!')
+        $.ajax({
+            type: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            data:data_c,
+            url: "http://127.0.0.1:8080/api/chamo/scrap",
+            dataType: 'json',
+            success: function(data) {
+                $("#status_s").html('')
+                $("#scrap_re").html('<a href="'+data.re+'" >download</a>')
+            },
+        })
+    });
+    $("#new_scrap_btn").click(function(){
+        key_word=$("#posi_keyword_input").val()
+        $.ajax({
+            type: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            data:"{}",
+            url: "http://127.0.0.1:8080/api/chamo/scrap",
+            dataType: 'json',
+            success: function(data) {
+                $("#scrap_re").html('')
+            },
+        })
+    });
+    $("#merge_upload").click(function(){
+        key_word=$("#posi_keyword_input").val()
+        $("#status_s").html('processing, please wait!!!!!!!!')
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:8080/api/chamo/merge_upload",
+            dataType: 'json',
+            success: function(data) {
+                alert("merge completed!");
+                $("#status_s").html('')
+            },
+        })
+    });
+
+    $("#update_material").click(function(){
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:8080/api/chamo/update_material",
+            dataType: 'json',
+            success: function(data) {
+                $("#materil_list").html(data.re)
+            },
+        })
+    });
+    $("#release_model").click(function(){
+        $.ajax({
+            type: 'POST',
+            url: "http://127.0.0.1:8080/api/chamo/release_model",
+            dataType: 'json',
+            success: function(data) {
+            },
+        })
+    });
+
+
 });
 
 $(function () {
@@ -88,18 +185,6 @@ $(function () {
             return false;
         }
         ajaxFileUpload("http://127.0.0.1:8080/api/chamo/img_upload", 'fileImg');
-        return true;
-    })
-})
-
-$(function () {
-    $("#savetrain").click(function () {
-        var ths=$('#filetrain');
-        if (ths.val().length <= 0) {
-            alert("plesae specify a file");
-            return false;
-        }
-        ajaxFileUpload("http://127.0.0.1:8080/api/chamo/train_upload", 'filetrain');
         return true;
     })
 })
@@ -124,7 +209,7 @@ function ajaxFileUpload(addr, eleId) {
 </script>
 </head>
 <body>
-
+<div id="status_s"></div>
 <button id="show_result">show result</button>
 <button id="evalu">evaluation</button>
 <button id="tensorboard">Toggle Tensorboard</button>
@@ -132,14 +217,24 @@ function ajaxFileUpload(addr, eleId) {
 <button id="train_s_t">Check Training Statues</button>
 <button id="conv_tfrecord">Convert Tfrecord</button>
 <br>
+<button id="merge_upload">Merge Upload</button>
+<button id="update_material">Update Materials</button>
+<button id="release_model">Release Model</button>
+<br>
 <div id="train_s"></div>
+<br>
+<input type="text" id="scrap_num" value="500">
+<br>
+<textarea id="posi_keyword_input" style="width:200px;height:80px;"></textarea>>
+<button id="new_scrap_btn">New Scrap</button>
+<button id="posi_scrap_btn">Scrap Posi</button>
+<button id="neg_scrap_btn">Scrap Neg</button>
+<div id="scrap_re"></div>
 <br>
     <input id="fileImg" type="file" name="fileImg" size="80" />
     <input id="saveImg" type="button" value="evl img"  />
-<br>
-    <input id="filetrain" type="file" name="filetrain" size="80" />
-    <input id="savetrain" type="button" value="train img"  />
 
+<div id="materil_list"></div>
 <div id="result"></div>
 </body>
 </html>

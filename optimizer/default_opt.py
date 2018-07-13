@@ -37,9 +37,9 @@ class default_opt:
             coord = tf.train.Coordinator()
             threads = tf.train.start_queue_runners(coord=coord)
             if self.loading_his:
-                saver.restore(sess, self.result_addr+self.ckpt_name+'/chamo.ckpt')
+                saver.restore(sess, self.result_addr+'/base_cp/chamo.ckpt')
             merge = tf.summary.merge_all()
-            writer = tf.summary.FileWriter("logs/", sess.graph)
+            writer = tf.summary.FileWriter(self.result_addr+"/logs/", sess.graph)
             i =-1
             while True:
                 before_time = time.perf_counter()
@@ -52,7 +52,7 @@ class default_opt:
                     writer.add_summary(summary, i)
                     print("[step: %f][loss: %f][step time: %f]" % (i,train_loss_val,step_time,))
                     if i % (self.debug_step_len*20) == 0:
-                        output_name=self.result_addr+"cur_cp"
+                        output_name=self.result_addr+"/cur_cp"
                         saver1.save(sess, output_name+'/chamo.ckpt')
             coord.request_stop()
             coord.join(threads)

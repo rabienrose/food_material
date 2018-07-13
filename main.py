@@ -16,6 +16,7 @@ import optimizer.default_opt
 import utils.data_helper
 
 config_name=sys.argv[1]
+class_num=int(sys.argv[2])
 print('choose config: '+config_name)
 config_obj=None
 if config_name=='chamo':
@@ -32,19 +33,19 @@ if preprocess_name=='default':
     preprocess_obj=data_preprocessing.default_preprocess.default_preprocess(
         config_obj.tfrecord_addr,
         config_obj.batchsize,
-        config_obj.class_num
+        class_num
     )
 
-test_preprocess_obj=data_preprocessing.test_preprocess.test_preprocess(config_obj.tfrecord_test_addr, config_obj.class_num)
+test_preprocess_obj=data_preprocessing.test_preprocess.test_preprocess(config_obj.tfrecord_test_addr, class_num)
 net_name=config_obj.net_type
 net_obj=None
 test_net_obj=None
 if net_name=='vgg16':
-    net_obj=net.vgg16.vgg16(True, 'vgg16', config_obj.class_num)
-    test_net_obj=net.vgg16.vgg16(False, 'vgg16', config_obj.class_num)
+    net_obj=net.vgg16.vgg16(True, 'vgg16', class_num)
+    test_net_obj=net.vgg16.vgg16(False, 'vgg16', class_num)
 elif net_name=='mobilenet_v2':
-    net_obj = net.mobilenet_v2.mobilenet_v2(True, 'mobilenet_v2', config_obj.class_num)
-    test_net_obj = net.mobilenet_v2.mobilenet_v2(False, 'mobilenet_v2', config_obj.class_num)
+    net_obj = net.mobilenet_v2.mobilenet_v2(True, 'mobilenet_v2', class_num)
+    test_net_obj = net.mobilenet_v2.mobilenet_v2(False, 'mobilenet_v2', class_num)
 
 
 loss_name=config_obj.loss_type

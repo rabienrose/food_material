@@ -28,6 +28,10 @@ def task_proc(task_list, fpath_list):
         # check if the image file is valid
         if '1' in task_list:
             im = Image.open(img_path)
+            if im.size[0]<100 or im.size[1]<100:
+                print('removing the too small image file: {}'.format(img_path))
+                os.system('rm {}'.format(img_path))
+                continue
             try:
                 im.load()
             except:

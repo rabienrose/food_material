@@ -5,11 +5,13 @@
 <script src="jquery.min.js"></script>
 <script src="ajaxfileupload.js"></script>
 <script>
+
+server_ip="172.30.8.119"
 $(document).ready(function(){
     $("#show_result").click(function(){
         $.ajax({
             type: 'POST',
-            url: "http://127.0.0.1:8080/api/chamo/get_result",
+            url: "http://"+server_ip+":8080/api/chamo/get_result",
             dataType: 'json',
             success: function(data) {
                 $("#result").empty()
@@ -24,7 +26,7 @@ $(document).ready(function(){
         $("#status_s").html('processing, please wait!!!!!!!!')
         $.ajax({
             type: 'POST',
-            url: "http://127.0.0.1:8080/api/chamo/evaluation",
+            url: "http://"+server_ip+":8080/api/chamo/evaluation",
             dataType: 'json',
             success: function(data) {
                 $("#status_s").html('')
@@ -35,7 +37,7 @@ $(document).ready(function(){
     $("#tensorboard").click(function(){
         $.ajax({
             type: 'POST',
-            url: "http://127.0.0.1:8080/api/chamo/tensorboard",
+            url: "http://"+server_ip+":8080/api/chamo/tensorboard",
             dataType: 'json',
             success: function(data) {
 
@@ -45,7 +47,7 @@ $(document).ready(function(){
     $("#Training").click(function(){
         $.ajax({
             type: 'POST',
-            url: "http://127.0.0.1:8080/api/chamo/train",
+            url: "http://"+server_ip+":8080/api/chamo/train",
             dataType: 'json',
             success: function(data) {
 
@@ -56,7 +58,7 @@ $(document).ready(function(){
         $("#status_s").html('processing, please wait!!!!!!!!')
         $.ajax({
             type: 'POST',
-            url: "http://127.0.0.1:8080/api/chamo/conv_tfrecord",
+            url: "http://"+server_ip+":8080/api/chamo/conv_tfrecord",
             dataType: 'json',
             success: function(data) {
                 $("#status_s").html('')
@@ -71,7 +73,7 @@ $(document).ready(function(){
                 "Content-type": "application/json"
             },
             data:'{"proc_name":"python", "keyword":"main.py"}',
-            url: "http://127.0.0.1:8080/api/chamo/check_proc",
+            url: "http://"+server_ip+":8080/api/chamo/check_proc",
             dataType: 'json',
             success: function(data) {
                 if (data.re==1){
@@ -96,7 +98,7 @@ $(document).ready(function(){
                 "Content-type": "application/json"
             },
             data:data_c,
-            url: "http://127.0.0.1:8080/api/chamo/scrap",
+            url: "http://"+server_ip+":8080/api/chamo/scrap",
             dataType: 'json',
             success: function(data) {
                 $("#status_s").html('')
@@ -109,7 +111,7 @@ $(document).ready(function(){
         key_word=key_word.replace(/\r\n/g,",")
         key_word=key_word.replace(/\n/g,",");
         scrap_num=$("#scrap_num").val()
-        data_c='{"key_word":"'+key_word+'", "isPosi":"0", "maxcount":"'+scrap_num+'"}'
+        data_c='{"key_word":"'+key_word+'", "isPosi":"2", "maxcount":"'+scrap_num+'"}'
         $("#status_s").html('processing, please wait!!!!!!!!')
         $.ajax({
             type: 'POST',
@@ -117,7 +119,28 @@ $(document).ready(function(){
                 "Content-type": "application/json"
             },
             data:data_c,
-            url: "http://127.0.0.1:8080/api/chamo/scrap",
+            url: "http://"+server_ip+":8080/api/chamo/scrap",
+            dataType: 'json',
+            success: function(data) {
+                $("#status_s").html('')
+                $("#scrap_re").html('<a href="'+data.re+'" >download</a>')
+            },
+        })
+    });
+    $("#both_scrap_btn").click(function(){
+        key_word=$("#posi_keyword_input").val()
+        key_word=key_word.replace(/\r\n/g,",")
+        key_word=key_word.replace(/\n/g,",");
+        scrap_num=$("#scrap_num").val()
+        data_c='{"key_word":"'+key_word+'", "isPosi":"3", "maxcount":"'+scrap_num+'"}'
+        $("#status_s").html('processing, please wait!!!!!!!!')
+        $.ajax({
+            type: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            data:data_c,
+            url: "http://"+server_ip+":8080/api/chamo/scrap",
             dataType: 'json',
             success: function(data) {
                 $("#status_s").html('')
@@ -133,7 +156,7 @@ $(document).ready(function(){
                 "Content-type": "application/json"
             },
             data:"{}",
-            url: "http://127.0.0.1:8080/api/chamo/scrap",
+            url: "http://"+server_ip+":8080/api/chamo/scrap",
             dataType: 'json',
             success: function(data) {
                 $("#scrap_re").html('')
@@ -145,7 +168,7 @@ $(document).ready(function(){
         $("#status_s").html('processing, please wait!!!!!!!!')
         $.ajax({
             type: 'POST',
-            url: "http://127.0.0.1:8080/api/chamo/merge_upload",
+            url: "http://"+server_ip+":8080/api/chamo/merge_upload",
             dataType: 'json',
             success: function(data) {
                 alert("merge completed!");
@@ -157,7 +180,7 @@ $(document).ready(function(){
     $("#update_material").click(function(){
         $.ajax({
             type: 'POST',
-            url: "http://127.0.0.1:8080/api/chamo/update_material",
+            url: "http://"+server_ip+":8080/api/chamo/update_material",
             dataType: 'json',
             success: function(data) {
                 $("#materil_list").html(data.re)
@@ -167,7 +190,7 @@ $(document).ready(function(){
     $("#release_model").click(function(){
         $.ajax({
             type: 'POST',
-            url: "http://127.0.0.1:8080/api/chamo/release_model",
+            url: "http://"+server_ip+":8080/api/chamo/release_model",
             dataType: 'json',
             success: function(data) {
             },
@@ -184,7 +207,7 @@ $(function () {
             alert("plesae specify a file");
             return false;
         }
-        ajaxFileUpload("http://127.0.0.1:8080/api/chamo/img_upload", 'fileImg');
+        ajaxFileUpload("http://"+server_ip+":8080/api/chamo/img_upload", 'fileImg');
         return true;
     })
 })
@@ -229,6 +252,7 @@ function ajaxFileUpload(addr, eleId) {
 <button id="new_scrap_btn">New Scrap</button>
 <button id="posi_scrap_btn">Scrap Posi</button>
 <button id="neg_scrap_btn">Scrap Neg</button>
+<button id="both_scrap_btn">Scrap Both</button>
 <div id="scrap_re"></div>
 <br>
     <input id="fileImg" type="file" name="fileImg" size="80" />

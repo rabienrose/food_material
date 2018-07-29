@@ -7,7 +7,7 @@ def check_sim(query, db):
         os.remove("query_list.txt")
     if os.path.exists("img_list.txt"):
         os.remove("img_list.txt")
-    os.system('../img_sim_check/script/check_sim.sh ' + query +' '+ db)
+    os.system('tool/img_sim_check/script/check_sim.sh ' + db +' '+ query)
 
 def copy_files(src, db):
     files = os.listdir(src)

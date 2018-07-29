@@ -25,7 +25,7 @@ def process_img(imgs, re_dir,result_group, checkpt, material_list):
     image=tf.expand_dims(image,[0])
     net_test = net_obj.def_net(image)
     inputs=tf.sigmoid(net_test)
-    predict=tf.cast(inputs> 0.4, tf.float32)
+    #predict=tf.cast(inputs> 0.95, tf.float32)
     saver = tf.train.Saver()
     count=0
     for material_name in material_list:
@@ -36,15 +36,21 @@ def process_img(imgs, re_dir,result_group, checkpt, material_list):
     with tf.Session() as sess:
         saver.restore(sess, checkpt)
         for image_name in imgs:
+            print(image_name)
             image_raw_data_jpg = tf.gfile.FastGFile(image_name, 'rb').read()
             count=count+1
-            predict_v, img_data = sess.run([predict,img_show],feed_dict={image_raw_data: image_raw_data_jpg})
+            predict_v, img_data = sess.run([inputs,img_show],feed_dict={image_raw_data: image_raw_data_jpg})
             mat_show = []
-            print(predict_v)
+            #print(predict_v)
+            mat_thres=[0.8, 0.9, 0.9, 0.6]
+                     # 芹菜, 香菇, 木耳, 花菜
             for i in range(len(predict_v[0])):
-                if predict_v[0][i] == 1:
+                if predict_v[0][i] > mat_thres[i]:
+                    predict_v[0][i] = 1
                     mat_show.append(material_list[i])
-            print(mat_show)
+                else:
+                    predict_v[0][i] = 0
+
             # show_img = img_data
             show_img = abs(img_data) / 256.0
             plt.imshow(show_img)

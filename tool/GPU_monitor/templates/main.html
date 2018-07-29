@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Monitor GPUs</title>
+  </head>
+  <body>
+  <h1>Setup on GPU machine</h1>
+  <ol>
+    <li>sudo apt install sysstat</li>
+    <li>sudo apt install openssh-server</li>
+    <li>sudo service ssh start</li>
+    <li>sudo ps -e |grep ssh</li>
+    <li>sudo apt-get install vsftpd</li>
+    <li>Set the password to 1</li>
+    <li>Set the password of teamview to 123456</li>
+  </ol>
+  <h1>Summary</h1>
+  {{ content | safe }}
+  </body>
+</html>

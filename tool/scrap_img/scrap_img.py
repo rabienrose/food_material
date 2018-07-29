@@ -26,6 +26,9 @@ def scrap(key_word, dst_dir, maxcount):
             except requests.exceptions.TooManyRedirects:
                 print('打不开！哼')
                 continue
+            except requests.exceptions.ChunkedEncodingError:
+                print('打不开！哼')
+                continue
             string=dst_dir+'/'+key_word+'_'+str(n)+'.jpg'
             fp=open(string,'wb')
             fp.write(pic.content)

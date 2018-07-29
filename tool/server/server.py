@@ -19,9 +19,14 @@ import shutil
 import subprocess
 import tool.scrap_img.scrap_img
 import tool.scrap_img.scrap_sougou
+import tool.scrap_img.scrap_img_both
 import data_convertor.process_img
 import tool.server.update_train_imgs
 import data_scraping.materil_name
+#import main
+
+
+material_candi=data_scraping.materil_name.material_candi
 
 app = Flask(__name__)
 PROD = True
@@ -206,7 +211,7 @@ def handle_api_train():
     if check_proc('python', 'main.py')=='-1':
         create_dir(cur_cp)
         create_dir(logs)
-    turn_proc('python ../../main.py chamo_class2 '+str(len(get_materil_list(False))), 'python', 'main.py')
+    turn_proc('python ./main.py chamo_class2 '+str(len(get_materil_list(False))), 'python', 'main.py')
     return jsonify(ret)
 
 @app.route('/api/chamo/update_material', methods=['POST'])
@@ -252,22 +257,38 @@ def handle_api_scrap():
         create_dir(scrap_root)
         os.mkdir(scrap_root + '/positive')
         os.mkdir(scrap_root + '/negative')
+        os.mkdir(scrap_root + '/both')
         return jsonify(ret)
     for key_word in key_words:
-        create_dir(temp_root)
-        scrap_root_sub=scrap_root
-        if isPosi=='1':
-            tool.scrap_img.scrap_img.scrap(key_word, temp_root, int(maxcount))
-            scrap_root_sub=scrap_root+'/positive'
+        if key_word=='':
+            continue
+        if isPosi=='3':
+            for mat in material_candi:
+                create_dir(temp_root)
+                key_word_c = key_word + mat
+                tool.scrap_img.scrap_img.scrap(key_word_c, temp_root, int(maxcount))
+                scrap_root_sub = scrap_root + '/both'
+                data_convertor.process_img.checkFormat(temp_root, 6)
+                data_convertor.process_img.checkChannel(temp_root, 6)
+                files = os.listdir(scrap_root_sub)
+                if len(files) > 0:
+                    tool.server.update_train_imgs.check_sim(temp_root, scrap_root_sub)
+                tool.server.update_train_imgs.copy_files(temp_root, scrap_root_sub)
         else:
-            tool.scrap_img.scrap_sougou.getSoGoImG(key_word, int(maxcount), temp_root)
-            scrap_root_sub = scrap_root + '/negative'
-        data_convertor.process_img.checkFormat(temp_root, 6)
-        data_convertor.process_img.checkChannel(temp_root, 6)
-        files = os.listdir(scrap_root_sub)
-        if len(files)>0:
-            tool.server.update_train_imgs.check_sim(temp_root, scrap_root_sub)
-        tool.server.update_train_imgs.copy_files(temp_root, scrap_root_sub)
+            create_dir(temp_root)
+            scrap_root_sub = scrap_root
+            if isPosi=='1':
+                tool.scrap_img.scrap_img.scrap(key_word, temp_root, int(maxcount))
+                scrap_root_sub=scrap_root+'/positive'
+            elif isPosi=='2':
+                tool.scrap_img.scrap_sougou.getSoGoImG(key_word, int(maxcount), temp_root)
+                scrap_root_sub = scrap_root + '/negative'
+            data_convertor.process_img.checkFormat(temp_root, 6)
+            data_convertor.process_img.checkChannel(temp_root, 6)
+            files = os.listdir(scrap_root_sub)
+            if len(files)>0:
+                tool.server.update_train_imgs.check_sim(temp_root, scrap_root_sub)
+            tool.server.update_train_imgs.copy_files(temp_root, scrap_root_sub)
     zip_dir(scrap_root, data_root+'/scrap.zip')
     ret['re']='scrap.zip'
     return jsonify(ret)

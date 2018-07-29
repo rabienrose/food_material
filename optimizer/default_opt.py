@@ -20,6 +20,7 @@ class default_opt:
     def run(self, loss, test_acc):
         tvars = tf.trainable_variables()
         g_vars = [var for var in tvars if 'MobilenetV2/Logits' in var.name]
+        g_vars = [var for var in tvars if 'MobilenetV2/Conv' in var.name]
         print(g_vars)
         optimizer = tf.train.AdamOptimizer(1e-4)
         #train_step = slim.learning.create_train_op(loss,optimizer,update_ops=g_vars)
